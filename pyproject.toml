@@ -5,9 +5,9 @@ requires = ["uv_build>=0.8"]
 build-backend = "uv_build"
 
 [project]
-name = "python-template"
+name = "billiam-data-stack"
 version = "0.0.0"
-description = ""
+description = "Analytical data stack for life admin."
 authors = [{name = "billwallis"}]
 readme = "README.md"
 requires-python = ">=3.13"
@@ -18,21 +18,15 @@ dev = [
     "poethepoet>=0.42.1",
     "pre-commit>=4.5.1",
 ]
-test = [
-    "pytest>=9.0.2",
-    "pytest-cov>=7.0.0",
-]
 
 
 [tool.uv]
 required-version = ">=0.8"
 default-groups = "all"
-#package = false
+package = false
 
-#[tool.uv.build-backend]
-#module-name = "src"
-#module-root = ""
-#namespace = true
+[tool.uv.build-backend]
+namespace = true
 
 
 [tool.poe]
@@ -69,11 +63,6 @@ shell = """
     echo '\\033[0;34mpre-push checks\\033[0m'
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
 """
-
-
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-fail-under=80"
-testpaths = ["tests"]
 
 
 [tool.ruff]
