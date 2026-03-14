@@ -1,0 +1,123 @@
+# yaml-language-server: $schema=https://json.schemastore.org/pyproject.json
+
+[build-system]
+requires = ["uv_build>=0.8"]
+build-backend = "uv_build"
+
+[project]
+name = "python-template"
+version = "0.0.0"
+description = ""
+authors = [{name = "billwallis"}]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "poethepoet>=0.42.1",
+    "pre-commit>=4.5.1",
+]
+test = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+]
+
+
+[tool.uv]
+required-version = ">=0.8"
+default-groups = "all"
+#package = false
+
+#[tool.uv.build-backend]
+#module-name = "src"
+#module-root = ""
+#namespace = true
+
+
+[tool.poe]
+verbosity = -1
+envfile.optional = ".env"
+
+[tool.poe.tasks]
+install.shell = """
+    uv sync --refresh
+    uv run pre-commit install --install-hooks
+"""
+upgrade.shell = """
+    uv sync --refresh --upgrade
+    uv run pre-commit autoupdate
+"""
+test = "uv run pytest -vvv"
+
+[tool.poe.tasks.lint]
+control.expr = "sys.platform"
+
+[[tool.poe.tasks.lint.switch]]
+case = "win32"
+shell = """
+    echo '=== pre-commit checks ==='
+    SKIP=identity uv run pre-commit run --all-files --hook-stage pre-commit
+    echo '=== pre-push checks ==='
+    SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
+"""
+
+[[tool.poe.tasks.lint.switch]]
+shell = """
+    echo '\\033[0;34mpre-commit checks\\033[0m'
+    SKIP=identity uv run pre-commit run --all-files --hook-stage pre-commit
+    echo '\\033[0;34mpre-push checks\\033[0m'
+    SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
+"""
+
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-fail-under=80"
+testpaths = ["tests"]
+
+
+[tool.ruff]
+line-length = 80
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = [
+    "ANN",   # flake8-annotations
+    "B",     # flake8-bugbear
+    "E",     # pycodestyle-error
+    "F",     # Pyflakes
+    "FURB",  # refurb
+    "I",     # isort
+    "N",     # pep8-naming
+    "PL",    # Pylint
+    "PERF",  # Perflint
+    "RUF",   # Ruff-specific
+    "S",     # flake8-bandit
+    "UP",    # pyupgrade
+    "W",     # pycodestyle-warning
+]
+ignore = [
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
+    "E501",    # Line too long
+]
+fixable = ["ALL"]
+unfixable = []
+# Allow unused variables when underscore-prefixed
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# https://github.com/astral-sh/ruff/issues/4368
+[tool.ruff.lint.extend-per-file-ignores]
+"tests/**/*.py" = [
+    "ANN001",   # Missing type annotation for function argument
+    "ANN201",   # Missing return type annotation for public function
+    "S101",     # Use of `assert` detected
+    "PLR2004",  # Magic value used in comparison
+    "PLR0913",  # Too many arguments in function definition
+]

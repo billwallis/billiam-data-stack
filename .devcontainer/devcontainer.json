@@ -1,0 +1,11 @@
+// yaml-language-server: $schema=https://json.schemastore.org/devcontainer.json
+
+// https://aka.ms/devcontainer.json
+{
+  // image: "mcr.microsoft.com/devcontainers/python:1-3.12",
+  build: {
+    dockerfile: "Dockerfile",
+    context: ".."
+  },
+  remoteUser: "root",
+}
