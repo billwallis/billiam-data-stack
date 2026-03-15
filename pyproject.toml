@@ -11,7 +11,10 @@ description = "Analytical data stack for life admin."
 authors = [{name = "billwallis"}]
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "dlt[motherduck]>=1.23.0",
+    "duckdb<1.5.0",  # capped by MotherDuck
+]
 
 [dependency-groups]
 dev = [

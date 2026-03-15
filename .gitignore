@@ -1,6 +1,10 @@
 # System files
 .DS_Store
 
+# dlt
+.dlt/.sources
+.dlt/secrets.toml
+
 # Database files
 *.sqlite
 *.*db
