@@ -45,6 +45,7 @@ upgrade.shell = """
     uv sync --refresh --upgrade
     uv run pre-commit autoupdate
 """
+run = "uv run -m src.ingestion"
 test = "uv run pytest -vvv"
 
 [tool.poe.tasks.lint]
