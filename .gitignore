@@ -5,6 +5,10 @@
 .dlt/.sources
 .dlt/secrets.toml
 
+# Google auth
+credentials.json
+token.json
+
 # Database files
 *.sqlite
 *.*db
