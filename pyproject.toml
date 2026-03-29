@@ -17,6 +17,7 @@ dependencies = [
     "google-api-python-client>=2.190.0",
     "google-auth-httplib2>=0.3.0",
     "google-auth-oauthlib>=1.3.0",
+    "sqlmesh>=0.232.0",
 ]
 
 [dependency-groups]
@@ -48,8 +49,29 @@ upgrade.shell = """
     uv sync --refresh --upgrade
     uv run pre-commit autoupdate
 """
-run = "uv run -m src.ingestion"
-test = "uv run pytest -vvv"
+run = """
+    uv run -m src.ingestion
+    sqlmesh -p src/transformation run
+"""
+
+# SQLMesh wrappers (`cmd` rather than `shell` for colour output)
+clean = [
+    {cmd = "sqlmesh -p src/transformation clean"},
+    {cmd = "sqlmesh -p src/transformation janitor"},
+]
+debug = [
+    {cmd = "sqlmesh -p src/transformation info"},
+    {cmd = "sqlmesh -p src/transformation check_intervals"},
+]
+
+render = "sqlmesh -p src/transformation render"
+test = "sqlmesh -p src/transformation test -vv"
+
+migrate = "sqlmesh -p src/transformation migrate"
+plan = "sqlmesh -p src/transformation plan"
+audit = "sqlmesh -p src/transformation audit"
+
+sqlmesh = "sqlmesh -p src/transformation"
 
 [tool.poe.tasks.lint]
 control.expr = "sys.platform"
@@ -61,6 +83,8 @@ shell = """
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-commit
     echo '=== pre-push checks ==='
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
+    echo '=== sqlmesh checks ==='
+    sqlmesh -p src/transformation lint
 """
 
 [[tool.poe.tasks.lint.switch]]
@@ -69,6 +93,8 @@ shell = """
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-commit
     echo '\\033[0;34mpre-push checks\\033[0m'
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
+    echo '\\033[0;34msqlmesh checks\\033[0m'
+    sqlmesh -p src/transformation lint
 """
 
 

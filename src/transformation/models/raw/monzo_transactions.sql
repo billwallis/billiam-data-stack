@@ -1,0 +1,43 @@
+model (
+    name warehouse.raw.monzo_transactions,
+    kind full,
+    grain (transaction_id),
+    tags (finances),
+    columns (
+        transaction_id varchar,
+        transaction_date date,
+        transaction_time time,
+        type varchar,
+        counterparty varchar,
+        emoji varchar,
+        category varchar,
+        cost decimal(18, 2),
+        currency varchar,
+        local_cost decimal(18, 2),
+        local_currency varchar,
+        notes varchar,
+        address varchar,
+        receipt blob,
+        description varchar,
+    ),
+);
+
+
+select
+    transaction_id,
+    strptime("date", '%d/%M/%Y')::date as transaction_date,
+    "time"::time as transaction_time,
+    trim("type") as "type",
+    trim("name") as counterparty,
+    emoji,
+    trim(category) as category,
+    -amount::decimal(18, 2) as "cost",
+    currency,
+    -local_amount::decimal(18, 2) as local_cost,
+    local_currency,
+    notes_and_tags as notes,
+    address,
+    receipt,
+    trim(description) as description,
+from landing.google_sheets.monzo_transactions
+;

@@ -1,0 +1,22 @@
+---
+project: billiam_data_stack
+
+ignore_patterns: ["__*.sql"]
+default_target_environment: dev
+model_defaults:
+  dialect: duckdb
+  start: 2018-01-01
+
+plan:
+  enable_preview: true
+
+default_gateway: remote
+gateways:
+  remote:
+    connection:
+      type: motherduck
+      token: "{{ env_var('MOTHERDUCK_TOKEN') }}"
+      catalogs:
+        warehouse: "warehouse"
+        landing: "landing"
+        ods: "ods"
