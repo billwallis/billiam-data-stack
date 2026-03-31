@@ -3,6 +3,7 @@ model (
     kind full,
     grain (row_id),
     tags (finances),
+    allow_partials true,
     depends_on (
         raw.amex_transactions,
         raw.monzo_transactions,
@@ -19,6 +20,7 @@ model (
         payment_method varchar,
         exclusion_flag boolean,
         reimbursement_transaction_id int,
+        _load_ts timestamp,
     ),
     audits (
         not_null(columns=[
@@ -31,6 +33,7 @@ model (
             counterparty,
             payment_method,
             exclusion_flag,
+            _load_ts,
         ]),
         unique_values(columns=[row_id]),
         assert__monzo_transactions_reconcile,
@@ -41,13 +44,33 @@ model (
 
 
 from (
-        /* Current Finances */
-        select *
-        from landing.google_sheets.finances
-    union all by name
         /* Historic Finances */
-        select * rename (retailer as primary_retailer)
+        select
+            "transaction",
+            "date",
+            item,
+            cost,
+            category,
+            retailer as primary_retailer,
+            payment_method,
+            exclusion,
+            reimbursement_transaction,
+            _dlt_load_id,
         from landing.google_sheets.finances_history
+    union all by name
+        /* Current Finances */
+        select
+            "transaction",
+            "date",
+            item,
+            cost,
+            category,
+            primary_retailer,
+            payment_method,
+            exclusion,
+            reimbursement_transaction,
+            _dlt_load_id,
+        from landing.google_sheets.finances
 )
 select
     row_number() over () as row_id,  /* A pseudo row ID for maintaining uniqueness */
@@ -59,7 +82,8 @@ select
     trim(primary_retailer) as counterparty,
     trim(payment_method) as payment_method,
     coalesce(exclusion::bool, false) as exclusion_flag,
-    nullif(reimbursement_transaction, '')::int as reimbursement_transaction_id
+    nullif(reimbursement_transaction, '')::int as reimbursement_transaction_id,
+    make_timestamp(1000000 * _dlt_load_id::bigint) as _load_ts,
 ;
 
 
@@ -80,12 +104,6 @@ my_transactions_rollup as (
         and payment_method = 'Monzo'
         and category != 'Interest'
         and counterparty not in ('Monzo Joint', 'TfL')
-        /* Specific exceptions */
-        and transaction_id not in (
-            1132, /* 2019-07-22, £5 Joining Reward */
-        )
-        /* Monzo changes */
-        and if(transaction_date < '2023-11-17', item != 'Monzo Premium', 1=1)
     group by transaction_id
 ),
 
@@ -112,11 +130,12 @@ monzo_txns as (
 
         (sum(cost) over (order by transaction_date, transaction_time))::decimal(18, 2) as running_cost,
     from warehouse.raw.monzo_transactions
-    where "type" not in ('Pot transfer')
-      and cost != 0
-      and category not in ('Savings')
-      and counterparty not in ('Transport for London')
-      and counterparty not in (from warehouse.raw.counterparty_exclusions)
+    where 1=1
+        and "type" not in ('Pot transfer', 'Account interest')
+        and cost != 0
+        and category not in ('Savings')
+        and counterparty not in ('Transport for London')
+        and counterparty not in (from warehouse.raw.counterparty_exclusions)
 ),
 
 joined as (
@@ -151,7 +170,7 @@ joined as (
 
     If we've had 20 mismatches in a row, then this audit will fail.
 */
-select sum(match_flag::int) as matches
+select sum(coalesce(match_flag::int, 0)) as matches
 from (
     select *
     from joined
@@ -180,8 +199,9 @@ monzo_txns as (
         transaction_date,
         sum(cost)::numeric(18, 2) as cost,
     from warehouse.raw.monzo_transactions
-    where counterparty = 'Transport for London'
-      and cost != 0
+    where 1=1
+        and counterparty = 'Transport for London'
+        and cost != 0
     group by transaction_date
 ),
 
@@ -234,7 +254,7 @@ joined as (
     whereas Monzo (`raw.monzo_transactions`) records each _transaction_
     which can correspond to several journeys.
 */
-select sum(match_flag::int) as matches
+select sum(coalesce(match_flag::int, 0)) as matches
 from (
     select *
     from joined
@@ -292,9 +312,9 @@ my_txns as (
         select
             * replace (
                 case transaction_id
-                    when 5334 then 25.43  /* WTF is this? */
-                    when 5644 then 35.91  /* Check Deliveroo receipt */
-                    when 5687 then 50.57  /* Check Deliveroo receipt */
+                    when 5335 then 25.43  /* WTF is this? */
+                    when 5645 then 35.91  /* Check Deliveroo receipt */
+                    when 5688 then 50.57  /* Check Deliveroo receipt */
                               else cost
                 end as cost
             )
@@ -350,6 +370,7 @@ joined as (
     Similar to the above, we just match "close enough".
 */
 select sum(match_flag::int) as matches
+-- select sum(coalesce(match_flag::int, 0)) as matches
 from (
     select *
     from joined
