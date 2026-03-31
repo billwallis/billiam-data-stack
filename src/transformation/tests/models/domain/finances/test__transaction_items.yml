@@ -1,0 +1,13 @@
+---
+test__finances__transaction_items:
+  model: finances.transaction_items
+  inputs:
+    raw.finances:
+      - {row_id: 1, transaction_id: 1, transaction_date: "2020-01-01", item: "Item 1", cost: 2.99, category: "Food", counterparty: "Tesco", payment_method: null, exclusion_flag: null, reimbursement_transaction_id: null}
+      - {row_id: 2, transaction_id: 1, transaction_date: "2020-01-01", item: "Item 2", cost: 3.99, category: "Food", counterparty: "Tesco", payment_method: null, exclusion_flag: null, reimbursement_transaction_id: null}
+    finances.transactions:
+      - {transaction_id: 1, transaction_date: "2020-01-01", cost: 6.98, item_count: 2, counterparty: "Tesco"}
+  outputs:
+    query:
+      - {row_id: 1, transaction_id: 1, transaction_date: "2020-01-01", item: "Item 1", cost: 2.99, category: "Food", counterparty: "Tesco", exclusion_flag: null}
+      - {row_id: 2, transaction_id: 1, transaction_date: "2020-01-01", item: "Item 2", cost: 3.99, category: "Food", counterparty: "Tesco", exclusion_flag: null}
