@@ -49,6 +49,8 @@ upgrade.shell = """
     uv sync --refresh --upgrade
     uv run pre-commit autoupdate
 """
+docker-up = "docker-compose --file docker-compose.yaml --project-name billiam-data-stack up --detach"
+docker-down = "docker-compose --file docker-compose.yaml --project-name billiam-data-stack down --remove-orphans"
 
 # SQLMesh wrappers (`cmd` rather than `shell` for colour output)
 run = [

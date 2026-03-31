@@ -1,5 +1,5 @@
-# System files
-.DS_Store
+# SQLMesh
+logs/
 
 # dlt
 .dlt/.sources
@@ -19,6 +19,9 @@ token.json
 *.iml
 out
 gen
+
+# System files
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
