@@ -1,0 +1,16 @@
+---
+test__bi__task_details:
+  model: bi.task_details
+  inputs:
+    career.daily_tracker:
+      - {log_ts: "2019-04-23 08:15:00", project: "BAU Task", detail: "Task 1", minutes: 15}
+      - {log_ts: "2019-04-23 08:30:00", project: "BAU Task", detail: "Task 2", minutes: 15}
+      - {log_ts: "2019-04-23 08:45:00", project: "BAU Task", detail: "Task 3", minutes: 15}
+      - {log_ts: "2019-04-23 09:00:00", project: "BAU Task", detail: "Task 4", minutes: 15}
+  outputs:
+    query:
+      - {group_id: 0, group_description: "Task and detail", project: "BAU Task", detail: "Task 1", total_records: 1, total_time: 15, start_time: "2019-04-23 08:15:00", end_time: "2019-04-23 08:15:00"}
+      - {group_id: 0, group_description: "Task and detail", project: "BAU Task", detail: "Task 2", total_records: 1, total_time: 15, start_time: "2019-04-23 08:30:00", end_time: "2019-04-23 08:30:00"}
+      - {group_id: 0, group_description: "Task and detail", project: "BAU Task", detail: "Task 3", total_records: 1, total_time: 15, start_time: "2019-04-23 08:45:00", end_time: "2019-04-23 08:45:00"}
+      - {group_id: 0, group_description: "Task and detail", project: "BAU Task", detail: "Task 4", total_records: 1, total_time: 15, start_time: "2019-04-23 09:00:00", end_time: "2019-04-23 09:00:00"}
+      - {group_id: 1, group_description: "Task only",       project: "BAU Task", detail: "",       total_records: 4, total_time: 60, start_time: "2019-04-23 08:15:00", end_time: "2019-04-23 09:00:00"}
