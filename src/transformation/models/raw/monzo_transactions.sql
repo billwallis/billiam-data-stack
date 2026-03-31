@@ -19,13 +19,14 @@ model (
         address varchar,
         receipt blob,
         description varchar,
+        _load_ts timestamp,
     ),
 );
 
 
 select
     transaction_id,
-    strptime("date", '%d/%M/%Y')::date as transaction_date,
+    strptime("date", '%d/%m/%Y')::date as transaction_date,
     "time"::time as transaction_time,
     trim("type") as "type",
     trim("name") as counterparty,
@@ -39,5 +40,6 @@ select
     address,
     receipt,
     trim(description) as description,
+    make_timestamp(1000000 * _dlt_load_id::bigint) as _load_ts,
 from landing.google_sheets.monzo_transactions
 ;

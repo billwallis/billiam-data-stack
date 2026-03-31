@@ -49,12 +49,12 @@ upgrade.shell = """
     uv sync --refresh --upgrade
     uv run pre-commit autoupdate
 """
-run = """
-    uv run -m src.ingestion
-    sqlmesh -p src/transformation run
-"""
 
 # SQLMesh wrappers (`cmd` rather than `shell` for colour output)
+run = [
+    {cmd = "uv run -m src.ingestion"},
+    {cmd = "sqlmesh -p src/transformation run"},
+]
 clean = [
     {cmd = "sqlmesh -p src/transformation clean"},
     {cmd = "sqlmesh -p src/transformation janitor"},
