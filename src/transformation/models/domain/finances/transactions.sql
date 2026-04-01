@@ -20,7 +20,7 @@ select
     count(*) as item_count,
     string_agg(distinct counterparty, '||') as counterparty,
     any_value(reimbursement_transaction_id) as reimbursement_transaction_id,
-from warehouse.raw.finances
+from warehouse.raw_google_sheets.finances
 where item != 'Credit Card Bill'  /* Exclude credit repayment transactions */
 group by transaction_id
 order by transaction_id

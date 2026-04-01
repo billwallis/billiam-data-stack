@@ -16,5 +16,5 @@ select
     project,
     detail,
     minutes,
-from warehouse.raw.daily_tracker
+from warehouse.raw_ods.daily_tracker
 ;

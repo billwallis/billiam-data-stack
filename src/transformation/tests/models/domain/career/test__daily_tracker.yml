@@ -2,7 +2,7 @@
 test__career__daily_tracker:
   model: career.daily_tracker
   inputs:
-    raw.daily_tracker:
+    raw_ods.daily_tracker:
       - {log_ts: "2019-04-23 08:15:00", project: "BAU Task", detail: "Task 1", minutes: 15}
       - {log_ts: "2019-04-23 08:30:00", project: "BAU Task", detail: "Task 2", minutes: 15}
       - {log_ts: "2019-04-23 08:45:00", project: "BAU Task", detail: "Task 3", minutes: 15}

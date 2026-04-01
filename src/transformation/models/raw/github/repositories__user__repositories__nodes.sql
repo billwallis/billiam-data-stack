@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.github__repositories__user__repositories__nodes,
+    name warehouse.raw_github.repositories__user__repositories__nodes,
     kind full,
     grain (repository_id),
     tags (github),

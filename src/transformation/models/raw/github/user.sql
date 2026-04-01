@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.github__user,
+    name warehouse.raw_github.user,
     kind full,
     grain (user_id),
     tags (github),

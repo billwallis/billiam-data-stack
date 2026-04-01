@@ -20,7 +20,7 @@ with repayment_items as (
         finances.cost,
         finances.payment_method,
         finances.exclusion_flag,
-    from warehouse.raw.finances
+    from warehouse.raw_google_sheets.finances
         anti join warehouse.finances.transactions
             using (transaction_id)
 )
