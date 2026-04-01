@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.counterparty_exclusions,
+    name warehouse.raw_ods.counterparty_exclusions,
     kind full,
     grain (counterparty),
     tags (finances),

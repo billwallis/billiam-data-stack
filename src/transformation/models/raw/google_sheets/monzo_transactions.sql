@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.monzo_transactions,
+    name warehouse.raw_google_sheets.monzo_transactions,
     kind full,
     grain (transaction_id),
     tags (finances),

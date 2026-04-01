@@ -30,7 +30,7 @@ weeks as (
         and date_nk <= current_date
         and date_nk >= (
             select date_trunc('week', min(from_date))
-            from warehouse.raw__dev.work_hours
+            from warehouse.raw_ods.work_hours
         )
 ),
 
@@ -47,14 +47,14 @@ weekly_quota as (
             + friday
             + saturday
         ) as weekly_quota
-    from warehouse.raw.work_hours
+    from warehouse.raw_ods.work_hours
 ),
 
 absence_hours as (
     select
         date_trunc('week', absence_date) as week_starting,
         sum(hours) as absence_hours
-    from warehouse.raw.work_absences
+    from warehouse.raw_ods.work_absences
     group by all
 ),
 

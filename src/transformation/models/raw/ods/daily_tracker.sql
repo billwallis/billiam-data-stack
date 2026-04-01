@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.daily_tracker,
+    name warehouse.raw_ods.daily_tracker,
     kind full,
     grain (log_ts),
     tags (daily-tracker),

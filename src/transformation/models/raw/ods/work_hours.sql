@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.work_hours,
+    name warehouse.raw_ods.work_hours,
     kind full,
     grain (company, from_date),
     tags (daily-tracker),

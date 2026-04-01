@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.amex_transactions,
+    name warehouse.raw_ods.amex_transactions,
     kind full,
     grain (transaction_id),
     tags (finances),

@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw.work_absences,
+    name warehouse.raw_ods.work_absences,
     kind full,
     grain (absence_date),
     tags (daily-tracker),

@@ -1,13 +1,13 @@
 model (
-    name warehouse.raw.finances,
+    name warehouse.raw_google_sheets.finances,
     kind full,
     grain (row_id),
     tags (finances),
     allow_partials true,
     depends_on (
-        raw.amex_transactions,
-        raw.monzo_transactions,
-        raw.counterparty_exclusions,
+        raw_google_sheets.monzo_transactions,
+        raw_ods.amex_transactions,
+        raw_ods.counterparty_exclusions,
     ),
     columns (
         row_id int,
@@ -99,7 +99,7 @@ my_transactions_rollup as (
         any_value(transaction_date) as transaction_date,
         any_value(counterparty) as counterparty,
         sum(cost)::decimal(18, 2) as cost,
-    from warehouse.raw.finances
+    from warehouse.raw_google_sheets.finances
     where 1=1
         and payment_method = 'Monzo'
         and category != 'Interest'
@@ -129,13 +129,13 @@ monzo_txns as (
         cost::decimal(18, 2) as cost,
 
         (sum(cost) over (order by transaction_date, transaction_time))::decimal(18, 2) as running_cost,
-    from warehouse.raw.monzo_transactions
+    from warehouse.raw_google_sheets.monzo_transactions
     where 1=1
         and "type" not in ('Pot transfer', 'Account interest')
         and cost != 0
         and category not in ('Savings')
         and counterparty not in ('Transport for London')
-        and counterparty not in (from warehouse.raw.counterparty_exclusions)
+        and counterparty not in (from warehouse.raw_ods.counterparty_exclusions)
 ),
 
 joined as (
@@ -190,7 +190,7 @@ my_txns as (
     select
         transaction_date,
         sum(cost)::numeric(18, 2) as cost,
-    from warehouse.raw.finances
+    from warehouse.raw_google_sheets.finances
     where (counterparty, payment_method) = ('TfL', 'Monzo')
     group by transaction_date
 ),
@@ -198,7 +198,7 @@ monzo_txns as (
     select
         transaction_date,
         sum(cost)::numeric(18, 2) as cost,
-    from warehouse.raw.monzo_transactions
+    from warehouse.raw_google_sheets.monzo_transactions
     where 1=1
         and counterparty = 'Transport for London'
         and cost != 0
@@ -276,14 +276,14 @@ my_transactions_rollup as (
         any_value(transaction_date) as transaction_date,
         any_value(counterparty) as counterparty,
         sum(cost)::decimal(18, 2) as cost,
-    from warehouse.raw.finances
+    from warehouse.raw_google_sheets.finances
     where 1=1
         and payment_method = 'Amex'
         and counterparty not in ('Monzo', 'TfL')
         and not exists(
             /* Remove cancelled Uber requests */
             select *
-            from warehouse.raw.finances as i
+            from warehouse.raw_google_sheets.finances as i
             where 1=1
                 and finances.counterparty = 'Uber'
                 and i.counterparty = 'Uber'
@@ -292,7 +292,7 @@ my_transactions_rollup as (
         )
         and transaction_date <= (
             select max(transaction_date)
-            from warehouse.raw.amex_transactions
+            from warehouse.raw_ods.amex_transactions
         )
     group by transaction_id
 ),
@@ -330,7 +330,7 @@ amex_txns as (
         cost::decimal(18, 2) as cost,
 
         (sum(cost) over (order by transaction_date, transaction_id))::decimal(18, 2) as running_cost,
-    from warehouse.raw.amex_transactions
+    from warehouse.raw_ods.amex_transactions
     where 1=1
         and description not in (
             'PAYMENT RECEIVED - THANK YOU',
@@ -338,7 +338,7 @@ amex_txns as (
         )
         and transaction_date <= (
             select max(transaction_date)
-            from warehouse.raw.finances
+            from warehouse.raw_google_sheets.finances
         )
 ),
 

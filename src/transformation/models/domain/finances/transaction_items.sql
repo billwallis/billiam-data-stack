@@ -24,7 +24,7 @@ select
     finances.category,
     finances.counterparty,
     finances.exclusion_flag,
-from warehouse.raw.finances
+from warehouse.raw_google_sheets.finances
     semi join warehouse.finances.transactions
         using (transaction_id)
 order by finances.row_id
