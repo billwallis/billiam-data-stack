@@ -15,12 +15,27 @@ model (
       friday decimal(4, 2),
       saturday decimal(4, 2),
     ),
+    audits (
+        not_null(columns=[
+            company,
+            from_date,
+            to_date,
+            sunday,
+            monday,
+            tuesday,
+            wednesday,
+            thursday,
+            friday,
+            saturday,
+        ]),
+    ),
 );
 
 select
     company,
     from_date,
     to_date,
+
     sunday,
     monday,
     tuesday,

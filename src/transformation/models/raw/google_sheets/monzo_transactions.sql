@@ -19,13 +19,28 @@ model (
         address varchar,
         receipt blob,
         description varchar,
+        _dlt_id varchar,
+        _dlt_load_id varchar,
         _load_ts timestamp,
+    ),
+    audits (
+        not_null(columns=[
+            transaction_id,
+            _dlt_id,
+            _dlt_load_id,
+            _load_ts,
+        ]),
+        unique_values(columns=[
+            transaction_id,
+            _dlt_id,
+        ]),
     ),
 );
 
 
 select
     transaction_id,
+
     strptime("date", '%d/%m/%Y')::date as transaction_date,
     "time"::time as transaction_time,
     trim("type") as "type",
@@ -40,6 +55,9 @@ select
     address,
     receipt,
     trim(description) as description,
+
+    _dlt_id,
+    _dlt_load_id,
     make_timestamp(1000000 * _dlt_load_id::bigint) as _load_ts,
 from landing.google_sheets.monzo_transactions
 ;
