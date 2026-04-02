@@ -2,6 +2,7 @@ model (
     name warehouse.calendar.bank_holidays,
     kind full,
     grain (date_nk),
+    allow_partials true,
     columns (
         date_nk date,
         region varchar,

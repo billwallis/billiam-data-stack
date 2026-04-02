@@ -3,6 +3,7 @@ model (
     kind full,
     grain (user_id, _dlt_id),
     tags (github),
+    allow_partials true,
     columns (
         user_id varchar,
         login varchar,

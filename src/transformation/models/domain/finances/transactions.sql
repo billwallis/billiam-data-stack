@@ -2,6 +2,7 @@ model (
     name warehouse.finances.transactions,
     kind full,
     grain (transaction_id),
+    allow_partials true,
     columns (
         transaction_id int,
         transaction_date date,
