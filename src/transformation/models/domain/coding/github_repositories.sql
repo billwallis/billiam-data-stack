@@ -154,7 +154,7 @@ where 1=1
     and not is_archived
     and (0=1
         or nullif(description, '') is null
-        or not endswith(description, '.')
+        or not ends_with(description, '.')
         or (not is_private and not auto_merge_allowed)
         or not delete_branch_on_merge
         or not forking_allowed
