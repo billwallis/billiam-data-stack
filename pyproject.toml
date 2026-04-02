@@ -55,7 +55,8 @@ docker-down = "docker-compose --file docker-compose.yaml --project-name billiam-
 # SQLMesh wrappers (`cmd` rather than `shell` for colour output)
 run = [
     {cmd = "uv run -m src.ingestion"},
-    {cmd = "sqlmesh -p src/transformation run"},
+    {cmd = "sqlmesh -p src/transformation run dev"},
+    {cmd = "sqlmesh -p src/transformation run prod"},
 ]
 clean = [
     {cmd = "sqlmesh -p src/transformation clean"},

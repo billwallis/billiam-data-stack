@@ -2,6 +2,7 @@ model (
     name warehouse.calendar.calendar,
     kind full,
     grain (date_nk),
+    allow_partials true,
     columns (
         date_nk date,
         date_id integer,

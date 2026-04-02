@@ -3,6 +3,7 @@ model (
     kind full,
     grain (transaction_id),
     tags (finances),
+    allow_partials true,
     columns (
         transaction_id varchar,
         transaction_date date,
