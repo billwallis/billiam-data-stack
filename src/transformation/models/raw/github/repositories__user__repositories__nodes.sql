@@ -3,6 +3,19 @@ model (
     kind full,
     grain (repository_id),
     tags (github),
+    audits (
+        not_null(columns=[
+            repository_id,
+            _dlt_id,
+            _dlt_list_idx,
+            _dlt_parent_id,
+        ]),
+        unique_values(columns=[
+            repository_id,
+            _dlt_id,
+        ]),
+        assert__all_github_repos_are_pulled,
+    ),
 );
 
 
@@ -41,7 +54,7 @@ select
     latest_release__name,
     latest_release__published_at,
     latest_release__tag_name,
-    latest_release__url
+    latest_release__url,
     merge_commit_allowed,
     merge_commit_message,
     merge_commit_title,
@@ -74,4 +87,33 @@ select
     _dlt_list_idx,
     _dlt_parent_id,
 from landing.github_user.repositories__user__repositories__nodes
+;
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+audit (name assert__all_github_repos_are_pulled);
+with
+
+expected as (
+    select
+        repositories_total_count,
+        _dlt_id,
+        _load_ts,
+    from warehouse.raw_github.repositories
+    qualify _dlt_load_id = max(_dlt_load_id) over ()
+),
+
+actual as (
+    select count(*) as repositories_total_count
+    from warehouse.raw_github.repositories__user__repositories__nodes as repos
+        inner join expected
+            on expected._dlt_id = repos._dlt_parent_id
+)
+
+select
+    (select any_value(repositories_total_count) from expected) as expected,
+    (select repositories_total_count from actual) as actual,
+where expected != actual
 ;

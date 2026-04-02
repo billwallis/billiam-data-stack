@@ -10,19 +10,22 @@ model (
         minutes int,
     ),
     audits (
-      not_null(columns=[
-        log_ts,
-        project,
-        detail,
-        minutes,
-      ]),
-      unique_values(columns=[log_ts]),
+        not_null(columns=[
+            log_ts,
+            project,
+            detail,
+            minutes,
+        ]),
+        unique_values(columns=[
+            log_ts,
+        ]),
     ),
 );
 
 
 select
     date_time::timestamp as log_ts,
+
     trim(task) as project,
     coalesce(trim(detail), '') as detail,
     "interval"::int as minutes,

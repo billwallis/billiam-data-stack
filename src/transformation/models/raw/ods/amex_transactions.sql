@@ -16,11 +16,20 @@ model (
         country varchar,
         category varchar,
     ),
+    audits (
+        not_null(columns=[
+            transaction_date,
+        ]),
+        -- unique_values(columns=[
+        --     transaction_date,
+        -- ]),
+    ),
 );
 
 
 select
     trim("Reference") as transaction_id,
+
     "Date"::date as transaction_date,
     trim("Description") as description,
     "Amount"::decimal(18, 2) as cost,

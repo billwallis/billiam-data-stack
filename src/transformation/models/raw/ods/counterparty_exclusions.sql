@@ -4,7 +4,15 @@ model (
     grain (counterparty),
     tags (finances),
     columns (
-      counterparty varchar,
+        counterparty varchar,
+    ),
+    audits (
+        not_null(columns=[
+            counterparty,
+        ]),
+        unique_values(columns=[
+            counterparty,
+        ]),
     ),
 );
 

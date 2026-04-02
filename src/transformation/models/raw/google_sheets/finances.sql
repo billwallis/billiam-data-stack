@@ -20,6 +20,8 @@ model (
         payment_method varchar,
         exclusion_flag boolean,
         reimbursement_transaction_id int,
+        _dlt_id varchar,
+        _dlt_load_id varchar,
         _load_ts timestamp,
     ),
     audits (
@@ -33,9 +35,14 @@ model (
             counterparty,
             payment_method,
             exclusion_flag,
+            _dlt_id,
+            _dlt_load_id,
             _load_ts,
         ]),
-        unique_values(columns=[row_id]),
+        unique_values(columns=[
+            row_id,
+            _dlt_id,
+        ]),
         assert__monzo_transactions_reconcile,
         assert__monzo_transactions_reconcile__tfl,
         assert__amex_transactions_reconcile,
@@ -55,6 +62,7 @@ from (
             payment_method,
             exclusion,
             reimbursement_transaction,
+            _dlt_id,
             _dlt_load_id,
         from landing.google_sheets.finances_history
     union all by name
@@ -69,11 +77,13 @@ from (
             payment_method,
             exclusion,
             reimbursement_transaction,
+            _dlt_id,
             _dlt_load_id,
         from landing.google_sheets.finances
 )
 select
     row_number() over () as row_id,  /* A pseudo row ID for maintaining uniqueness */
+
     "transaction"::int as transaction_id,
     "date"::date as transaction_date,
     trim(item) as item,
@@ -83,6 +93,9 @@ select
     trim(payment_method) as payment_method,
     coalesce(exclusion::bool, false) as exclusion_flag,
     nullif(reimbursement_transaction, '')::int as reimbursement_transaction_id,
+
+    _dlt_id,
+    _dlt_load_id,
     make_timestamp(1000000 * _dlt_load_id::bigint) as _load_ts,
 ;
 
