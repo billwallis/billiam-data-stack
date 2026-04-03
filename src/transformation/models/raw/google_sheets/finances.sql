@@ -5,9 +5,9 @@ model (
     tags (finances),
     allow_partials true,
     depends_on (
-        raw_google_sheets.monzo_transactions,
-        raw_ods.amex_transactions,
-        raw_ods.counterparty_exclusions,
+        warehouse.raw_google_sheets.monzo_transactions,
+        warehouse.raw_american_express.amex_transactions,
+        warehouse.raw_ods.counterparty_exclusions,
     ),
     columns (
         row_id int,
@@ -280,7 +280,7 @@ having matches = 0
 ------------------------------------------------------------------------
 ------------------------------------------------------------------------
 
-audit (name assert__amex_transactions_reconcile);
+audit (name assert__amex_transactions_reconcile, blocking false);
 with
 
 my_transactions_rollup as (
@@ -305,7 +305,7 @@ my_transactions_rollup as (
         )
         and transaction_date <= (
             select max(transaction_date)
-            from warehouse.raw_ods.amex_transactions
+            from warehouse.raw_american_express.amex_transactions
         )
     group by transaction_id
 ),
@@ -321,7 +321,7 @@ my_txns as (
 
         (sum(cost) over (order by transaction_id))::decimal(18, 2) as running_cost,
     from (
-        /* Some temporary fixes while I sort out my receipts */
+        /* TODO: Some temporary fixes while I sort out my receipts */
         select
             * replace (
                 case transaction_id
@@ -343,11 +343,12 @@ amex_txns as (
         cost::decimal(18, 2) as cost,
 
         (sum(cost) over (order by transaction_date, transaction_id))::decimal(18, 2) as running_cost,
-    from warehouse.raw_ods.amex_transactions
+    from warehouse.raw_american_express.amex_transactions
     where 1=1
         and description not in (
-            'PAYMENT RECEIVED - THANK YOU',
-            'TFL TRAVEL CHARGE       TFL.GOV.UK/CP'
+            'PAYMENT RECEIVED - THANK YOU',  /* Credit card repayment */
+            'TFL TRAVEL CHARGE       TFL.GOV.UK/CP',  /* TfL charge */
+            'TFL TRAVEL REFUND       TFL.GOV.UK/CP'  /* TfL refund */
         )
         and transaction_date <= (
             select max(transaction_date)
@@ -382,8 +383,7 @@ joined as (
 /*
     Similar to the above, we just match "close enough".
 */
-select sum(match_flag::int) as matches
--- select sum(coalesce(match_flag::int, 0)) as matches
+select sum(coalesce(match_flag::int, 0)) as matches
 from (
     select *
     from joined

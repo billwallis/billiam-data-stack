@@ -1,5 +1,6 @@
 import os
 
+import src.ingestion.american_express
 import src.ingestion.github
 import src.ingestion.google_sheets
 
@@ -14,6 +15,14 @@ def _ensure_env(env_var: str) -> str:
 
 def main() -> int:
     _ensure_env("MOTHERDUCK_TOKEN")
+
+    # # Run Amex
+    # amex_account_key = _ensure_env("AMEX_ACCOUNT_KEY")
+    # src.ingestion.american_express.american_express_pipeline(
+    #     cookie=src.ingestion.american_express.read_cookie(),
+    #     account_key=amex_account_key,
+    #     statement_end_dates=[],
+    # )
 
     # Run GitHub
     github_token = _ensure_env("GITHUB_API_TOKEN")
