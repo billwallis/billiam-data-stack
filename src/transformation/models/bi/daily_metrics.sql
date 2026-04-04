@@ -2,7 +2,6 @@ model (
     name warehouse.bi.daily_metrics,
     kind full,
     grain (metric_date),
-    allow_partials true,
     columns (
         metric_date date,
         total_cost decimal(18, 3),

@@ -3,7 +3,6 @@ model (
     kind full,
     grain (absence_date),
     tags (daily-tracker),
-    allow_partials true,
     columns (
         absence_date date,
         absence_reason varchar,

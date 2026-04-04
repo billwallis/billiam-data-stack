@@ -3,7 +3,6 @@ model (
     kind full,
     grain (log_ts),
     tags (daily-tracker),
-    allow_partials true,
     columns (
         log_ts timestamp,
         project varchar,

@@ -3,7 +3,6 @@ model (
     kind full,
     grain (repository_id),
     tags (github),
-    allow_partials true,
     audits (
         not_null(columns=[
             repository_id,

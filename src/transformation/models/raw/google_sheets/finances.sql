@@ -3,7 +3,6 @@ model (
     kind full,
     grain (row_id),
     tags (finances),
-    allow_partials true,
     depends_on (
         warehouse.raw_google_sheets.monzo_transactions,
         warehouse.raw_american_express.amex_transactions,

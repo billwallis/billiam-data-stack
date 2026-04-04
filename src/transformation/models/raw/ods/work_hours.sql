@@ -3,7 +3,6 @@ model (
     kind full,
     grain (company, from_date),
     tags (daily-tracker),
-    allow_partials true,
     columns (
       company varchar,
       from_date date,
