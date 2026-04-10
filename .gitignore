@@ -12,6 +12,9 @@ logs/
 credentials.json
 token.json
 
+# System files
+.DS_Store
+
 # Database files
 *.sqlite
 *.*db
@@ -22,9 +25,6 @@ token.json
 *.iml
 out
 gen
-
-# System files
-.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
