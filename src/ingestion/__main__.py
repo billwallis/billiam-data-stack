@@ -3,6 +3,7 @@ import os
 import src.ingestion.american_express
 import src.ingestion.github
 import src.ingestion.google_sheets
+import src.ingestion.notion
 
 
 def _ensure_env(env_var: str) -> str:
@@ -46,6 +47,10 @@ def main() -> int:
             # ("finances_history", finances_history_id, finances_history_name),
         ],
     )
+
+    # Run Notion
+    notion_token = _ensure_env("NOTION_API_TOKEN")
+    src.ingestion.notion.notion_pipeline(api_token=notion_token)
 
     return 0
 

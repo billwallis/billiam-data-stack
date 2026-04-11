@@ -2,7 +2,6 @@ model (
     name warehouse.career.weekly_working_hours,
     kind full,
     grain (week_starting),
-    allow_partials true,
     columns (
         week_starting date,
         weekly_quota decimal(6, 4),

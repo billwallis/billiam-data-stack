@@ -5,7 +5,9 @@ ignore_patterns: ["__*.sql"]
 default_target_environment: dev
 model_defaults:
   dialect: duckdb
+  cron: "@daily"
   start: 2018-01-01
+  allow_partials: true
 
 plan:
   enable_preview: true

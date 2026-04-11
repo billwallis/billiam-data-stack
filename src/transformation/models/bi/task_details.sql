@@ -2,7 +2,6 @@ model (
     name warehouse.bi.task_details,
     kind full,
     grain (group_id, project, detail),
-    allow_partials true,
     columns (
         group_id int,
         group_description varchar,

@@ -3,7 +3,6 @@ model (
     kind full,
     grain (counterparty),
     tags (finances),
-    allow_partials true,
     columns (
         counterparty varchar,
     ),
