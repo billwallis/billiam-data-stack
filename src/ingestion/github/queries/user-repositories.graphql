@@ -41,6 +41,7 @@ query($user: String!, $page_size: Int!, $cursor: String) {
                 isTemplate
                 isUserConfigurationRepository
                 latestRelease {id name publishedAt tagName url}
+                licenseInfo {id key name nickname description body url}
                 lockReason
                 mergeCommitAllowed
                 mergeCommitMessage
