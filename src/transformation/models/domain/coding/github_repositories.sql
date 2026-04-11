@@ -49,6 +49,12 @@ select
     repositories.url,
     repositories.owner__login as owner_username,
 
+    /*    Licence    */
+    license_info__id as licence_id,
+    license_info__key as licence_key,
+    license_info__name as licence_name,
+    license_info__nickname as licence_nickname,
+
     /*    General Settings    */
     /* General */
     repositories.name,
@@ -152,8 +158,10 @@ audit (
 with my_active_repos as (
     select
         url,
+        /* return True if the repo should be flagged as "misconfigured" */
         nullif(description, '') is null as description_is_null,
         not ends_with(description, '.') as incorrect_description_terminator,
+        licence_id is null as not_has_license,
         (not is_private and not auto_merge_allowed) as auto_merge_not_allowed,
         not delete_branch_on_merge as delete_branch_on_merge_not_allowed,
         not forking_allowed as forking_not_allowed,
