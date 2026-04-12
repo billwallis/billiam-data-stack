@@ -35,7 +35,6 @@ model (
 );
 
 
-
 select
     id as database_id,
     parent->>'$.block_id' as block_id,
