@@ -3,6 +3,7 @@ from src.ingestion import (
     github,
     google_sheets,
     notion,
+    oura,
     pure_gym,
 )
 
@@ -11,5 +12,6 @@ __all__ = [
     "github",
     "google_sheets",
     "notion",
+    "oura",
     "pure_gym",
 ]
