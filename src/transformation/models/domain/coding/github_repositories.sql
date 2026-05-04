@@ -48,11 +48,15 @@ select
     repositories.url,
     repositories.owner__login as owner_username,
 
+    /*    Ref counts    */
+    repositories.refs_heads__total_count as branches_count,
+    repositories.refs_tags__total_count as tags_count,
+
     /*    Licence    */
-    license_info__id as licence_id,
-    license_info__key as licence_key,
-    license_info__name as licence_name,
-    license_info__nickname as licence_nickname,
+    repositories.license_info__id as licence_id,
+    repositories.license_info__key as licence_key,
+    repositories.license_info__name as licence_name,
+    repositories.license_info__nickname as licence_nickname,
 
     /*    General Settings    */
     /* General */
