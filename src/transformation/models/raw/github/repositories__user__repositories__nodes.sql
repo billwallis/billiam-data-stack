@@ -79,6 +79,8 @@ select
     primary_language__name,
     pushed_at,
     rebase_merge_allowed,
+    refs_heads__total_count,
+    refs_tags__total_count,
     resource_path,
     squash_merge_allowed,
     squash_merge_commit_message,

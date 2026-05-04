@@ -60,6 +60,8 @@ query($user: String!, $page_size: Int!, $cursor: String) {
                 primaryLanguage {color id name}
                 pushedAt
                 rebaseMergeAllowed
+                refsHeads: refs(first: 100, refPrefix: "refs/heads/") {totalCount}
+                refsTags: refs(first: 100, refPrefix: "refs/tags/") {totalCount}
                 resourcePath
                 squashMergeAllowed
                 squashMergeCommitMessage
