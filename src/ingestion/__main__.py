@@ -4,6 +4,7 @@ import src.ingestion.american_express
 import src.ingestion.github
 import src.ingestion.google_sheets
 import src.ingestion.notion
+import src.ingestion.pure_gym
 
 
 def _ensure_env(env_var: str) -> str:
@@ -46,6 +47,14 @@ def main() -> int:
             ("finances", finances_id, finances_name),
             # ("finances_history", finances_history_id, finances_history_name),
         ],
+    )
+
+    # Run PureGym
+    pure_gym_username = _ensure_env("PURE_GYM_USERNAME")
+    pure_gym_password = _ensure_env("PURE_GYM_PASSWORD")
+    src.ingestion.pure_gym.pure_gym_pipeline(
+        username=pure_gym_username,
+        password=pure_gym_password,
     )
 
     # Run Notion
