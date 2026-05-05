@@ -27,6 +27,7 @@ PURE_GYM_RESOURCES: list[EndpointResource] = [
     {
         # My gym sessions
         "name": "gym_sessions",
+        "max_table_nesting": 1,
         "endpoint": {
             "path": "api/v2/gymSessions/member",
         },
