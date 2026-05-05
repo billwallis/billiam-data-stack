@@ -1,0 +1,66 @@
+model (
+    name warehouse.raw_pure_gym.member,
+    kind full,
+    grain (gym_id),
+    tags (pure_gym),
+    columns (
+        gym_access_pin integer,
+        suspended_reason varchar,
+        member_status varchar,
+        id__external_id integer,
+        id__compound_id varchar,
+        personal_details__first_name varchar,
+        personal_details__last_name varchar,
+        personal_details__date_of_birth date,
+        personal_details__contact_details__phone_number varchar,
+        personal_details__contact_details__email_address varchar,
+        personal_details__address__line1 varchar,
+        personal_details__address__line2 varchar,
+        personal_details__address__line3 varchar,
+        personal_details__address__town varchar,
+        personal_details__address__county varchar,
+        personal_details__address__province varchar,
+        personal_details__address__postcode varchar,
+        personal_details__address__country varchar,
+        _dlt_id varchar,
+        _dlt_load_id varchar,
+        _load_ts timestamp,
+    ),
+    audits (
+        not_null(columns=[
+            _dlt_id,
+            _dlt_load_id,
+            _load_ts,
+        ]),
+        unique_values(columns=[
+            _dlt_id,
+        ]),
+    ),
+);
+
+
+select
+    gym_access_pin,
+    suspended_reason,
+    member_status,
+    id->>'$.ExternalId' as id__external_id,
+    id->>'$.CompoundId' as id__compound_id,
+    personal_details->>'$.FirstName' as personal_details__first_name,
+    personal_details->>'$.LastName' as personal_details__last_name,
+    personal_details->>'$.DateOfBirth' as personal_details__date_of_birth,
+    personal_details->>'$.ContactDetails.PhoneNumber' as personal_details__contact_details__phone_number,
+    personal_details->>'$.ContactDetails.EmailAddress' as personal_details__contact_details__email_address,
+    personal_details->>'$.Address.Line1' as personal_details__address__line1,
+    personal_details->>'$.Address.Line2' as personal_details__address__line2,
+    personal_details->>'$.Address.Line3' as personal_details__address__line3,
+    personal_details->>'$.Address.Town' as personal_details__address__town,
+    personal_details->>'$.Address.County' as personal_details__address__county,
+    personal_details->>'$.Address.Province' as personal_details__address__province,
+    personal_details->>'$.Address.Postcode' as personal_details__address__postcode,
+    personal_details->>'$.Address.Country' as personal_details__address__country,
+    _dlt_id,
+    _dlt_load_id,
+    @dlt_load_ts(_dlt_load_id) as _load_ts,
+from landing.pure_gym.member
+order by _load_ts
+;
