@@ -1,10 +1,6 @@
 import os
 
-import src.ingestion.american_express
-import src.ingestion.github
-import src.ingestion.google_sheets
-import src.ingestion.notion
-import src.ingestion.pure_gym
+import src.ingestion
 
 
 def _ensure_env(env_var: str) -> str:
@@ -49,6 +45,10 @@ def main() -> int:
         ],
     )
 
+    # Run Notion
+    notion_token = _ensure_env("NOTION_API_TOKEN")
+    src.ingestion.notion.notion_pipeline(api_token=notion_token)
+
     # Run PureGym
     pure_gym_username = _ensure_env("PURE_GYM_USERNAME")
     pure_gym_password = _ensure_env("PURE_GYM_PASSWORD")
@@ -56,10 +56,6 @@ def main() -> int:
         username=pure_gym_username,
         password=pure_gym_password,
     )
-
-    # Run Notion
-    notion_token = _ensure_env("NOTION_API_TOKEN")
-    src.ingestion.notion.notion_pipeline(api_token=notion_token)
 
     return 0
 

@@ -7,7 +7,6 @@ from dlt.sources.helpers import requests
 from dlt.sources.helpers.rest_client.auth import BearerTokenAuth
 from dlt.sources.rest_api import EndpointResource, rest_api_source
 
-DEFAULT_PAGE_SIZE = 100
 PURE_GYM_BASE_URL = "https://capi.puregym.com/"
 PURE_GYM_RESOURCES: list[EndpointResource] = [
     {
