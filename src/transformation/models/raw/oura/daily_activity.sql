@@ -1,0 +1,113 @@
+model (
+    name warehouse.raw_oura.daily_activity,
+    kind full,
+    grain (id),
+    tags (oura),
+    columns (
+        id varchar,
+        day date,
+        timestamp timestamptz,
+
+        active_calories integer,
+        average_met_minutes decimal(8, 6),
+        equivalent_walking_distance bigint,
+        high_activity_met_minutes integer,
+        high_activity_time integer,
+        inactivity_alerts integer,
+        low_activity_met_minutes integer,
+        low_activity_time integer,
+        medium_activity_met_minutes integer,
+        medium_activity_time integer,
+        meters_to_target integer,
+        non_wear_time integer,
+        resting_time integer,
+        score integer,
+        sedentary_met_minutes integer,
+        sedentary_time integer,
+        steps integer,
+        target_calories integer,
+        target_meters integer,
+        total_calories integer,
+
+        class_5_min varchar,
+
+        contributors__meet_daily_targets integer,
+        contributors__move_every_hour integer,
+        contributors__recovery_time integer,
+        contributors__stay_active integer,
+        contributors__training_frequency integer,
+        contributors__training_volume integer,
+
+        met__interval integer,
+        met__items decimal(4, 2)[],
+        met__timestamp timestamp,
+
+        _dlt_id varchar,
+        _dlt_load_id varchar,
+        _load_ts timestamp,
+    ),
+    audits (
+        not_null(columns=[
+            id,
+            day,
+            timestamp,
+            _dlt_id,
+            _dlt_load_id,
+            _load_ts,
+        ]),
+        unique_values(columns=[
+            id,
+            day,
+            timestamp,
+            _dlt_id,
+        ]),
+    ),
+);
+
+
+select
+    id,
+    "day",
+    "timestamp",
+
+    active_calories,
+    average_met_minutes,
+    equivalent_walking_distance,
+    high_activity_met_minutes,
+    high_activity_time,
+    inactivity_alerts,
+    low_activity_met_minutes,
+    low_activity_time,
+    medium_activity_met_minutes,
+    medium_activity_time,
+    meters_to_target,
+    non_wear_time,
+    resting_time,
+    score,
+    sedentary_met_minutes,
+    sedentary_time,
+    steps,
+    target_calories,
+    target_meters,
+    total_calories,
+
+    class_5_min,
+
+    -- contributors,
+    contributors->>'$.meet_daily_targets' as contributors__meet_daily_targets,
+    contributors->>'$.move_every_hour' as contributors__move_every_hour,
+    contributors->>'$.recovery_time' as contributors__recovery_time,
+    contributors->>'$.stay_active' as contributors__stay_active,
+    contributors->>'$.training_frequency' as contributors__training_frequency,
+    contributors->>'$.training_volume' as contributors__training_volume,
+
+    -- met,
+    met->>'$.interval' as met__interval,
+    met->>'$.items' as met__items,
+    met->>'$.timestamp' as met__timestamp,
+
+    _dlt_id,
+    _dlt_load_id,
+    @dlt_load_ts(_dlt_load_id) as _load_ts,
+from landing.oura.daily_activity
+;
