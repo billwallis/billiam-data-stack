@@ -1,10 +1,13 @@
+import json
 import os
+import pathlib
+import tomllib
+from typing import Any
 
-import src.ingestion.american_express
-import src.ingestion.github
-import src.ingestion.google_sheets
-import src.ingestion.notion
-import src.ingestion.pure_gym
+import src.ingestion
+
+HERE = pathlib.Path(__file__).parent
+assert HERE.parent.name == "src"  # noqa: S101
 
 
 def _ensure_env(env_var: str) -> str:
@@ -13,6 +16,22 @@ def _ensure_env(env_var: str) -> str:
     except KeyError as e:
         err_msg = f"Missing required environment variable: {env_var}"
         raise OSError(err_msg) from e
+
+
+def _read_credentials_file(
+    file: pathlib.Path,
+    key: str,
+) -> Any:
+    if file.suffix == ".json":
+        with open(file, encoding="utf-8") as f:
+            contents = json.load(f)
+    elif file.suffix == ".toml":
+        with open(file, "rb") as f:
+            contents = tomllib.load(f)
+    else:
+        raise ValueError(f"Unsupported credentials file type: {file.suffix}")
+
+    return contents[key]
 
 
 def main() -> int:
@@ -49,6 +68,10 @@ def main() -> int:
         ],
     )
 
+    # Run Notion
+    notion_token = _ensure_env("NOTION_API_TOKEN")
+    src.ingestion.notion.notion_pipeline(api_token=notion_token)
+
     # Run PureGym
     pure_gym_username = _ensure_env("PURE_GYM_USERNAME")
     pure_gym_password = _ensure_env("PURE_GYM_PASSWORD")
@@ -57,12 +80,18 @@ def main() -> int:
         password=pure_gym_password,
     )
 
-    # Run Notion
-    notion_token = _ensure_env("NOTION_API_TOKEN")
-    src.ingestion.notion.notion_pipeline(api_token=notion_token)
+    # Run Oura
+    oura_access_token = _read_credentials_file(
+        file=HERE.parent.parent / "oura-credentials.json",
+        key="access_token",
+    )
+    assert isinstance(oura_access_token, str)  # noqa: S101
+    src.ingestion.oura.oura_pipeline(
+        access_token=oura_access_token,
+    )
 
     return 0
 
 
 if __name__ == "__main__":
-    main()  # pragma: no cover
+    raise SystemExit(main())  # pragma: no cover

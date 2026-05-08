@@ -12,6 +12,9 @@ logs/
 credentials.json
 token.json
 
+# Oura auth
+oura-credentials.json
+
 # System files
 .DS_Store
 
