@@ -5,8 +5,8 @@ model (
     tags (oura),
     columns (
         id varchar,
-        bedtime_start timestamp,
-        bedtime_end timestamp,
+        bedtime_start timestamptz,
+        bedtime_end timestamptz,
 
         day date,
         average_breath decimal(6, 3),
@@ -37,10 +37,10 @@ model (
 
         heart_rate__interval decimal(6, 2),
         heart_rate__items decimal(6, 2)[],
-        heart_rate__timestamp timestamp,
+        heart_rate__timestamp timestamptz,
         hrv__interval decimal(6, 2),
         hrv__items decimal(6, 2)[],
-        hrv__timestamp timestamp,
+        hrv__timestamp timestamptz,
         readiness__score decimal(6, 2),
         readiness__temperature_deviation decimal(6, 2),
         readiness__temperature_trend_deviation decimal(6, 2),

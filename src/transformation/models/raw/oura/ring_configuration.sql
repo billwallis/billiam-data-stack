@@ -6,11 +6,11 @@ model (
     columns (
         id varchar,
 
+        size integer,
         color varchar,
         firmware_version varchar,
         hardware_type varchar,
-        set_up_at timestamp,
-        size integer,
+        set_up_at timestamptz,
 
         _dlt_id varchar,
         _dlt_load_id varchar,
@@ -34,11 +34,11 @@ model (
 select
     id,
 
+    size,
     color,
     firmware_version,
     hardware_type,
     set_up_at,
-    size,
 
     _dlt_id,
     _dlt_load_id,

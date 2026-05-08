@@ -5,8 +5,8 @@ model (
     tags (oura),
     columns (
         id varchar,
-        start_datetime timestamp,
-        end_datetime timestamp,
+        start_datetime timestamptz,
+        end_datetime timestamptz,
 
         day date,
         activity varchar,

@@ -8,8 +8,8 @@ model (
 
         start_day date,
         end_day date,
-        end_time timestamp,
-        start_time timestamp,
+        end_time timestamptz,
+        start_time timestamptz,
 
         episodes__timestamp timestamptz,
         episodes__tags varchar[],

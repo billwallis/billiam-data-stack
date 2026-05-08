@@ -40,7 +40,7 @@ model (
 
         met__interval integer,
         met__items decimal(4, 2)[],
-        met__timestamp timestamp,
+        met__timestamp timestamptz,
 
         _dlt_id varchar,
         _dlt_load_id varchar,
