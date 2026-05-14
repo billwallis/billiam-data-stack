@@ -10,6 +10,7 @@ version = "0.0.0"
 description = "Analytical data stack for life admin."
 authors = [{name = "billwallis"}]
 readme = "README.md"
+license-files = ["LICENSE"]
 requires-python = ">=3.13"
 dependencies = [
     "dlt[motherduck]>=1.23.0",

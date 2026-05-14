@@ -1,0 +1,136 @@
+@url=https://api.github.com/graphql
+
+
+### Current user
+GRAPHQL {{ url }}
+Authorization: Bearer {{ token }}
+
+query {
+    viewer {
+        id
+        login
+    }
+}
+
+
+### Introspect API schemas
+GRAPHQL {{ url }}
+Authorization: Bearer {{ token }}
+
+query {
+    __schema {
+        types {
+            name
+        }
+    }
+}
+
+
+### Introspect User schema
+GRAPHQL {{ url }}
+Authorization: Bearer {{ token }}
+
+query {
+    __type(name: "User") {
+        name
+        kind
+        description
+        fields {
+            name
+            description
+            type {
+                name
+                kind
+                ofType {
+                    name
+                    kind
+                }
+            }
+        }
+    }
+}
+
+
+
+
+### https://gist.github.com/craigbeck/b90915d49fda19d5b2b17ead14dcd6da
+GRAPHQL {{ url }}
+Authorization: Bearer {{ token }}
+
+query IntrospectionQuery {
+    __schema {
+        queryType { name }
+        mutationType { name }
+        subscriptionType { name }
+        types {
+            ...FullType
+        }
+        directives {
+            name
+            description
+            args {
+                ...InputValue
+            }
+            onOperation
+            onFragment
+            onField
+        }
+    }
+}
+
+fragment FullType on __Type {
+    kind
+    name
+    description
+    fields(includeDeprecated: true) {
+        name
+        description
+        args {
+            ...InputValue
+        }
+        type {
+            ...TypeRef
+        }
+        isDeprecated
+        deprecationReason
+    }
+    inputFields {
+        ...InputValue
+    }
+    interfaces {
+        ...TypeRef
+    }
+    enumValues(includeDeprecated: true) {
+        name
+        description
+        isDeprecated
+        deprecationReason
+    }
+    possibleTypes {
+        ...TypeRef
+    }
+}
+
+fragment InputValue on __InputValue {
+    name
+    description
+    type { ...TypeRef }
+    defaultValue
+}
+
+fragment TypeRef on __Type {
+    kind
+    name
+    ofType {
+        kind
+        name
+        ofType {
+            kind
+            name
+            ofType {
+                kind
+                name
+            }
+        }
+    }
+}
