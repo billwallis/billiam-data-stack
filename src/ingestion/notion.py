@@ -46,22 +46,23 @@ NOTION_RESOURCES: list[EndpointResource] = [
             "data_selector": "results",
         },
     },
-    {
-        # https://developers.notion.com/reference/get-block-children
-        # TODO: recursively call this endpoint if the returned block has `has_children`
-        "name": "data_source_page_content",
-        "endpoint": {
-            "path": "v1/blocks/{resources.data_source_pages.id}/children",
-            "paginator": JSONResponseCursorPaginator(
-                cursor_path="next_cursor",
-                cursor_param="start_cursor",
-            ),
-            "params": {
-                "page_size": DEFAULT_PAGE_SIZE,
-            },
-            "data_selector": "results",
-        },
-    },
+    # Temporarily disable until we can get _all_ the content
+    # {
+    #     # https://developers.notion.com/reference/get-block-children
+    #     # TODO: recursively call this endpoint if the returned block has `has_children`
+    #     "name": "data_source_page_content",
+    #     "endpoint": {
+    #         "path": "v1/blocks/{resources.data_source_pages.id}/children",
+    #         "paginator": JSONResponseCursorPaginator(
+    #             cursor_path="next_cursor",
+    #             cursor_param="start_cursor",
+    #         ),
+    #         "params": {
+    #             "page_size": DEFAULT_PAGE_SIZE,
+    #         },
+    #         "data_selector": "results",
+    #     },
+    # },
 ]
 
 logger = logging.getLogger("ingestion")
