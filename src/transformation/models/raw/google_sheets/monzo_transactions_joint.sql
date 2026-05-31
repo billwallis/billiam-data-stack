@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw_google_sheets.monzo_transactions,
+    name warehouse.raw_google_sheets.monzo_transactions_joint,
     kind full,
     grain (transaction_id),
     tags (finances),
@@ -19,8 +19,6 @@ model (
         address varchar,
         receipt blob,
         description varchar,
-        category_split varchar,
-        pot_name varchar,
         _dlt_id varchar,
         _dlt_load_id varchar,
         _load_ts timestamp,
@@ -57,11 +55,9 @@ select
     address,
     receipt,
     trim(description) as description,
-    category_split,
-    pot_name,
 
     _dlt_id,
     _dlt_load_id,
     make_timestamp(1000000 * _dlt_load_id::bigint) as _load_ts,
-from landing.google_sheets.monzo_transactions
+from landing.google_sheets.monzo_transactions_joint
 ;
