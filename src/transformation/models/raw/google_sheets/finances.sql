@@ -306,6 +306,10 @@ my_transactions_rollup as (
             select max(transaction_date)
             from warehouse.raw_american_express.amex_transactions
         )
+        and transaction_date >= (
+            select min(transaction_date)
+            from warehouse.raw_american_express.amex_transactions
+        )
     group by transaction_id
 ),
 

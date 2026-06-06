@@ -12,7 +12,7 @@ from dlt.sources import DltResource
 from dlt.sources.helpers import requests
 
 HERE = pathlib.Path(__file__).parent
-START_DATE = datetime.date(year=2023, month=11, day=26)
+STATEMENT_DAY = 26
 BASE_URL = "https://global.americanexpress.com/api/servicing/v1"
 PARAMS = {
     "file_format": "csv",
@@ -30,31 +30,55 @@ def read_cookie() -> str:
     return (HERE / "amex-cookie").read_text().strip()
 
 
-def _plus_one_month(date: datetime.date) -> datetime.date:
+def _minus_one_month(date: datetime.date) -> datetime.date:
     assert date.day <= 28  # noqa: S101, PLR2004
-    if date.month == 12:  # noqa: PLR2004
+    if date.month == 1:
         return datetime.date(
-            year=date.year + 1,
-            month=1,
+            year=date.year - 1,
+            month=12,
             day=date.day,
         )
     else:
         return datetime.date(
             year=date.year,
-            month=date.month + 1,
+            month=date.month - 1,
             day=date.day,
         )
 
 
+def _previous_statement_date(statement_day: int) -> datetime.date:
+    return _minus_one_month(datetime.date.today().replace(day=statement_day))
+
+
+def _earliest_statement_date(statement_day: int) -> datetime.date:
+    # Amex statements over 2 years old can't be downloaded as CSVs
+    previous_statement_date = _previous_statement_date(statement_day)
+    return previous_statement_date.replace(
+        year=previous_statement_date.year - 2
+    )
+
+
 def _get_statement_dates(
-    start_date: datetime.date,
-    end_date: datetime.date,
+    statement_day: int,
+    start_date: datetime.date | None = None,
+    end_date: datetime.date | None = None,
 ) -> list[datetime.date]:
+    start_date = (
+        _earliest_statement_date(statement_day)
+        if start_date is None
+        else start_date
+    )
+    end_date = (
+        _previous_statement_date(statement_day)
+        if end_date is None
+        else end_date
+    )
+
     dates = []
-    current_date = start_date
-    while current_date < end_date:
+    current_date = end_date
+    while current_date > start_date:
         dates.append(current_date)
-        current_date = _plus_one_month(current_date)
+        current_date = _minus_one_month(current_date)
 
     return dates
 
@@ -99,7 +123,8 @@ def _american_express(
                 statement_end_dates=statement_end_dates,
             ),
             name="american_express_statements",
-            write_disposition="replace",
+            write_disposition="merge",
+            primary_key="reference",
         )
     ]
 
@@ -140,12 +165,18 @@ if __name__ == "__main__":
     # for item in resp:
     #     print(item)
 
-    statement_dates = _get_statement_dates(
-        start_date=START_DATE,
-        end_date=datetime.date.today(),
-    )
+    statement_dates = [
+        d.strftime("%Y-%m-%d")
+        for d in _get_statement_dates(
+            statement_day=STATEMENT_DAY,
+            # end_date=datetime.date(year=2026, month=5, day=STATEMENT_DAY),
+            # start_date=datetime.date(year=2026, month=3, day=STATEMENT_DAY),
+        )
+    ]
+    print(f"Grabbing Amex statements for dates: {', '.join(statement_dates)}")
+    input("Update the Amex cookie, then press Enter to continue...")
     american_express_pipeline(
         cookie=read_cookie(),
         account_key=os.environ["AMEX_ACCOUNT_KEY"],
-        statement_end_dates=[str(d) for d in statement_dates],
+        statement_end_dates=statement_dates,
     )
