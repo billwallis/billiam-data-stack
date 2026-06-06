@@ -57,7 +57,10 @@ def main() -> int:
     monzo_personal = _ensure_env("GOOGLE_SHEETS__MONZO_TRANSACTIONS_PERSONAL")
     monzo_joint = _ensure_env("GOOGLE_SHEETS__MONZO_TRANSACTIONS_JOINT")
     finances_id = _ensure_env("GOOGLE_SHEETS__FINANCES_ID")
-    finances_name = _ensure_env("GOOGLE_SHEETS__FINANCES_NAME")
+    finances_log = _ensure_env("GOOGLE_SHEETS__FINANCES_LOG")
+    finances_payment_methods = _ensure_env(
+        "GOOGLE_SHEETS__FINANCES_PAYMENT_METHODS"
+    )
     # finances_history_id = _ensure_env("GOOGLE_SHEETS__FINANCES_HISTORY_ID")
     # finances_history_name = _ensure_env("GOOGLE_SHEETS__FINANCES_HISTORY_NAME")
     src.ingestion.google_sheets.google_sheets_pipeline(
@@ -65,7 +68,8 @@ def main() -> int:
         google_sheets=[
             ("monzo_transactions", monzo_id, monzo_personal),
             ("monzo_transactions_joint", monzo_id, monzo_joint),
-            ("finances", finances_id, finances_name),
+            ("finances", finances_id, finances_log),
+            ("payment_methods", finances_id, finances_payment_methods),
             # ("finances_history", finances_history_id, finances_history_name),
         ],
     )

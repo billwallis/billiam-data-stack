@@ -4,6 +4,7 @@ model (
     grain (row_id),
     tags (finances),
     depends_on (
+        warehouse.raw_google_sheets.payment_methods,
         warehouse.raw_google_sheets.monzo_transactions,
         warehouse.raw_american_express.amex_transactions,
         warehouse.raw_ods.counterparty_exclusions,
@@ -45,6 +46,7 @@ model (
         assert__monzo_transactions_reconcile,
         assert__monzo_transactions_reconcile__tfl,
         assert__amex_transactions_reconcile,
+        assert__amex_transactions_reconcile__tfl,
     ),
 );
 
@@ -306,7 +308,26 @@ my_transactions_rollup as (
             select max(transaction_date)
             from warehouse.raw_american_express.amex_transactions
         )
+        and transaction_date >= (
+            select min(transaction_date)
+            from warehouse.raw_american_express.amex_transactions
+        )
     group by transaction_id
+),
+my_split_transactions as (
+    select
+        payment_methods.transaction_id,
+        finances.transaction_date,
+        finances.counterparty,
+        payment_methods.amount as cost,
+    from warehouse.raw_google_sheets.payment_methods
+        cross join lateral (
+            select i.transaction_date, i.counterparty
+            from warehouse.raw_google_sheets.finances as i
+            where payment_methods.transaction_id = i.transaction_id
+            limit 1
+        ) as finances
+    where payment_methods.payment_method = 'Amex'
 ),
 
 my_txns as (
@@ -320,17 +341,19 @@ my_txns as (
 
         (sum(cost) over (order by transaction_id))::decimal(18, 2) as running_cost,
     from (
-        /* TODO: Some temporary fixes while I sort out my receipts */
-        select
-            * replace (
-                case transaction_id
-                    when 5335 then 25.43  /* WTF is this? */
-                    when 5645 then 35.91  /* Check Deliveroo receipt */
-                    when 5688 then 50.57  /* Check Deliveroo receipt */
-                              else cost
-                end as cost
-            )
-        from my_transactions_rollup
+            /* TODO: Some temporary fixes while I sort out my receipts */
+            select
+                * replace (
+                    case transaction_id
+                        when 5335 then 25.43  /* WTF is this? */
+                        when 5645 then 35.91  /* Check Deliveroo receipt */
+                        when 5688 then 50.57  /* Check Deliveroo receipt */
+                                  else cost
+                    end as cost
+                )
+            from my_transactions_rollup
+        union all
+            from my_split_transactions
     )
 ),
 amex_txns as (
@@ -381,6 +404,101 @@ joined as (
 
 /*
     Similar to the above, we just match "close enough".
+*/
+select sum(coalesce(match_flag::int, 0)) as matches
+from (
+    select *
+    from joined
+    qualify row_id >= -20 + max(row_id) over ()
+)
+having matches = 0
+;
+
+
+
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+audit (name assert__amex_transactions_reconcile__tfl, blocking false);
+with
+
+my_txns as (
+    select
+        transaction_date,
+        sum(cost)::numeric(18, 2) as cost,
+    from warehouse.raw_google_sheets.finances
+    where 1=1
+        and (counterparty, payment_method) = ('TfL', 'Amex')
+        and transaction_date <= (
+            select max(transaction_date)
+            from warehouse.raw_american_express.amex_transactions
+        )
+        and transaction_date >= (
+            select min(transaction_date)
+            from warehouse.raw_american_express.amex_transactions
+        )
+    group by transaction_date
+),
+amex_txns as (
+    select
+        transaction_date,
+        sum(cost)::numeric(18, 2) as cost,
+    from warehouse.raw_american_express.amex_transactions
+    where description in (
+        'TFL TRAVEL CHARGE       TFL.GOV.UK/CP',  /* TfL charge */
+        'TFL TRAVEL REFUND       TFL.GOV.UK/CP'  /* TfL refund */
+    )
+    group by transaction_date
+),
+
+dates(transaction_date) as (
+    select dt::date
+    from generate_series(
+         (select min(transaction_date) from my_txns),
+         current_date,
+         interval 1 day
+    ) as gs(dt)
+),
+
+joined as (
+    from (
+        select
+            transaction_date,
+            coalesce(my_txns.cost, 0) as cost__mine,
+            coalesce(amex_txns.cost, 0) as cost__amex,
+
+            sum(cost__mine) over t_date as running_cost__mine,
+            sum(cost__amex) over t_date as running_cost__amex,
+        from dates
+            left join my_txns
+                using (transaction_date)
+            left join amex_txns
+                using (transaction_date)
+        window t_date as (order by transaction_date)
+    )
+    select
+        row_number() over (order by transaction_date) as row_id,
+        transaction_date,
+        cost__mine,
+        cost__amex,
+        running_cost__mine,
+        running_cost__amex,
+        (0=1
+            or running_cost__mine = running_cost__amex
+            /* account for the regular 1-day lag */
+            or running_cost__mine = lead(running_cost__amex) over (order by transaction_date)
+        ) as match_flag,
+)
+
+/* Uncomment for investigating */
+-- from joined order by transaction_date desc;
+
+/*
+    Similar to the above, we just match "close enough".
+
+    Remember that my spreadsheet (`raw.finances`) records each _journey_,
+    whereas Amex (`raw.amex_transactions`) records each _transaction_
+    which can correspond to several journeys.
 */
 select sum(coalesce(match_flag::int, 0)) as matches
 from (
