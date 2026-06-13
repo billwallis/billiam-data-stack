@@ -21,6 +21,7 @@ import json
 import os
 import pathlib
 import signal
+import sys
 import threading
 import urllib.parse
 import webbrowser
@@ -91,8 +92,13 @@ def _get_auth_token(
 
 
 def _shutdown() -> None:
-    # https://stackoverflow.com/a/62322623
-    os.kill(os.getpid(), signal.SIGKILL)
+    if sys.platform != "win32":
+        # https://stackoverflow.com/a/62322623
+        os.kill(os.getpid(), signal.SIGKILL)
+    else:
+        # TODO: Figure out what to do here
+        # https://stackoverflow.com/q/35772001
+        pass
 
 
 @app.route("/")
