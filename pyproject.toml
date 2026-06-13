@@ -1,7 +1,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/pyproject.json
-
 [build-system]
-requires = ["uv_build>=0.8"]
+requires = ["uv_build"]
 build-backend = "uv_build"
 
 [project]
@@ -23,8 +22,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "poethepoet>=0.42.1",
-    "pre-commit>=4.5.1",
+    "poethepoet>=0.46.0",
+    "pre-commit>=4.6.0",
 ]
 # for building own OAuth2 server
 oauth2 = [
@@ -33,7 +32,6 @@ oauth2 = [
 
 
 [tool.uv]
-required-version = ">=0.8"
 default-groups = "all"
 package = false
 
