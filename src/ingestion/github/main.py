@@ -105,21 +105,19 @@ def _get_graphql_pages(
     name="user",
     write_disposition="replace",
 )
-def user(
-    access_token: str,
-    username: str,
-) -> Generator[StrAny]:
+def user(connection_details: list[tuple[str, str]]) -> Generator[StrAny]:
     """
     Retrieve user details.
     """
 
-    logger.info(f"Extracting details for {username}")
-    data, _ = _run_graphql_query(
-        access_token=access_token,
-        query=_read_query("user.graphql"),
-        variables={"user": username},
-    )
-    yield data
+    for access_token, username in connection_details:
+        logger.info(f"Extracting details for {username}")
+        data, _ = _run_graphql_query(
+            access_token=access_token,
+            query=_read_query("user.graphql"),
+            variables={"user": username},
+        )
+        yield data
 
 
 @dlt.resource(
@@ -127,45 +125,42 @@ def user(
     write_disposition="replace",
 )
 def user_repositories(
-    access_token: str,
-    username: str,
+    connection_details: list[tuple[str, str]],
 ) -> Generator[StrAny]:
     """
     Retrieve user organisations.
     """
 
-    logger.info(f"Extracting repositories for {username}")
-    yield from _get_graphql_pages(
-        access_token=access_token,
-        query=_read_query("user-repositories.graphql"),
-        variables={
-            "user": username,
-            "page_size": DEFAULT_PAGE_SIZE,
-        },
-        node_type="repositories",
-    )
+    for access_token, username in connection_details:
+        logger.info(f"Extracting repositories for {username}")
+        yield from _get_graphql_pages(
+            access_token=access_token,
+            query=_read_query("user-repositories.graphql"),
+            variables={
+                "user": username,
+                "page_size": DEFAULT_PAGE_SIZE,
+            },
+            node_type="repositories",
+        )
 
 
 @dlt.source
-def github_user(
-    access_token: str,
-    username: str,
-) -> list[DltResource]:
+def github_user(connection_details: list[tuple[str, str]]) -> list[DltResource]:
     """
     dlt source for GitHub user data.
     """
 
-    args = (access_token, username)
     return [
-        user(*args).add_limit(max_time=MAX_TIMEOUT_SECONDS),
-        user_repositories(*args).add_limit(max_time=MAX_TIMEOUT_SECONDS),
+        user(connection_details).add_limit(
+            max_time=MAX_TIMEOUT_SECONDS,
+        ),
+        user_repositories(connection_details).add_limit(
+            max_time=MAX_TIMEOUT_SECONDS,
+        ),
     ]
 
 
-def github_pipeline(
-    access_token: str,
-    username: str,
-) -> None:
+def github_pipeline(connection_details: list[tuple[str, str]]) -> None:
     """
     dlt pipeline for GitHub data.
     """
@@ -176,7 +171,7 @@ def github_pipeline(
         dataset_name="github_user",
     )
     run_info = pipeline.run(
-        github_user(access_token=access_token, username=username),
+        github_user(connection_details=connection_details),
     )
     logger.info(run_info)
 
