@@ -47,9 +47,12 @@ def main() -> int:
 
     # Run GitHub
     github_token = _ensure_env("GITHUB_API_TOKEN")
+    github_archive_token = _ensure_env("GITHUB_ARCHIVE_API_TOKEN")
     src.ingestion.github.github_pipeline(
-        access_token=github_token,
-        username="billwallis",
+        connection_details=[
+            (github_token, "billwallis"),
+            (github_archive_token, "Bilbottom"),
+        ]
     )
 
     # Run Google Sheets
