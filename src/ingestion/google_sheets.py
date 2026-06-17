@@ -1,5 +1,7 @@
 import itertools
+import json
 import logging
+import os
 import pathlib
 from collections.abc import Generator
 
@@ -23,6 +25,26 @@ TOKEN_FILE = PROJECT_ROOT / "token.json"
 logger = logging.getLogger("ingestion")
 
 
+def _create_credentials_files(
+    project_id: str,
+    client_id: str,
+    client_secret: str,
+) -> None:
+    creds = {
+        "installed": {
+            "project_id": project_id,
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "redirect_uris": ["http://localhost"],
+        }
+    }
+    with open(CREDENTIALS_FILE, "w+", encoding="utf-8") as f:
+        json.dump(creds, f)
+
+
 def _get_credentials() -> credentials.Credentials:
     """
     Authenticate the user and return Google API credentials.
@@ -31,6 +53,13 @@ def _get_credentials() -> credentials.Credentials:
 
     - https://developers.google.com/workspace/calendar/api/quickstart/python#configure_the_sample
     """
+
+    if not CREDENTIALS_FILE.exists():
+        _create_credentials_files(
+            project_id=os.environ["GOOGLE_API_PROJECT_ID"],
+            client_id=os.environ["GOOGLE_API_CLIENT_ID"],
+            client_secret=os.environ["GOOGLE_API_CLIENT_SECRET"],
+        )
 
     if TOKEN_FILE.exists():
         creds = credentials.Credentials.from_authorized_user_file(
