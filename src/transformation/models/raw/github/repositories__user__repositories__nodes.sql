@@ -107,6 +107,7 @@ with
 
 expected as (
     select
+        login,
         repositories_total_count,
         _dlt_id,
         _load_ts,
@@ -122,7 +123,7 @@ actual as (
 )
 
 select
-    (select any_value(repositories_total_count) from expected) as expected,
+    (select sum(any_value(repositories_total_count)) over () from expected group by login limit 1) as expected,
     (select repositories_total_count from actual) as actual,
 where expected != actual
 ;
