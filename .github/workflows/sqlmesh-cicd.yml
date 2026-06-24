@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+#
+# https://sqlmesh.readthedocs.io/en/stable/integrations/github/
+---
+name: SQLMesh Bot
+
+on:
+  workflow_dispatch:
+#  pull_request:
+#    types: ["opened", "synchronize"]
+##    types: ["opened", "synchronize", "closed"]
+#    paths: ["src/transformation/**"]
+
+permissions:
+  contents: write
+  checks: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: sqlmesh-cicd
+  cancel-in-progress: true
+
+jobs:
+  sqlmesh_cicd:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Check out repository
+        uses: actions/checkout@v6
+
+      - name: 📦 Set up uv
+        uses: astral-sh/setup-uv@v7
+        with: { enable-cache: true }
+
+      - name: 🔨 Install dependencies
+        run: uv sync --all-groups
+
+      - name: ✅ Run SQLMesh bot
+        if: github.event.pull_request.merged == false
+        run: >
+          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} run-all
+        env:
+          MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
+
+#      - name: 🚀 Deploy to production
+#        if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+#        run: >
+#          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} deploy-production
+#        env:
+#          MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
