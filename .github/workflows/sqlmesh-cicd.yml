@@ -6,9 +6,9 @@ name: SQLMesh Bot
 
 on:
   workflow_dispatch:
-  pull_request:
-    types: ["opened", "synchronize"]
-#    types: ["opened", "synchronize", "closed"]
+#  pull_request:
+#    types: ["opened", "synchronize"]
+##    types: ["opened", "synchronize", "closed"]
 #    paths: ["src/transformation/**"]
 
 permissions:
