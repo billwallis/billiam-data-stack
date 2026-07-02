@@ -73,6 +73,7 @@ select
     'Sainsbury''s' as primary_retailer,
     '' as secondary_retailer,
     'Amex' as payment_method,
+    -- '<Split>' as payment_method,
     0 as exclusion_flag,
 from lines
 order by line_id
