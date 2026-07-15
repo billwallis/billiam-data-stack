@@ -54,6 +54,9 @@ upgrade.shell = """
 """
 docker-up = "docker-compose --file docker-compose.yaml --project-name billiam-data-stack up --detach"
 docker-down = "docker-compose --file docker-compose.yaml --project-name billiam-data-stack down --remove-orphans"
+auth.shell = """
+    python -m src.ingestion.oura_oauth
+"""
 
 # SQLMesh wrappers (`cmd` rather than `shell` for colour output)
 run = [

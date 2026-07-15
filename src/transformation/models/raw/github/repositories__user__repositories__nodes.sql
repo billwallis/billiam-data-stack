@@ -1,7 +1,7 @@
 model (
     name warehouse.raw_github.repositories__user__repositories__nodes,
     kind full,
-    grain (repository_id),
+    grain (repository_id, _dlt_id),
     tags (github),
     audits (
         not_null(columns=[
@@ -11,9 +11,9 @@ model (
             _dlt_parent_id,
         ]),
         unique_values(columns=[
-            repository_id,
             _dlt_id,
         ]),
+        unique_combination_of_columns(columns=(repository_id, _dlt_id)),
         assert__all_github_repos_are_pulled,
     ),
 );
