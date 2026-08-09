@@ -52,6 +52,7 @@ dependencies = [
 dev = [
     { name = "poethepoet" },
     { name = "pre-commit" },
+    { name = "shaper-bin" },
 ]
 oauth2 = [
     { name = "flask" },
@@ -71,6 +72,7 @@ requires-dist = [
 dev = [
     { name = "poethepoet", specifier = ">=0.46.0" },
     { name = "pre-commit", specifier = ">=4.6.0" },
+    { name = "shaper-bin", specifier = "==0.21.0" },
 ]
 oauth2 = [{ name = "flask", specifier = ">=3.1.3" }]
 
@@ -1659,6 +1661,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/34/26/f5d29e25ffdb535afef2d35cdb55b325298f96debd670da4c325e08d70f4/setuptools-83.0.0.tar.gz", hash = "sha256:025bccbbf0fa05b6192bc64ae1e7b16e001fd6d6d4d5de03c97b1c1ade523bef", size = 1154254, upload-time = "2026-07-04T15:31:22.699Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/40/e1e72872c6354b306daef1703549e8e83b4d43cfea356311bf722a043752/setuptools-83.0.0-py3-none-any.whl", hash = "sha256:29b23c360f22f414dc7336bb39178cc7bcbf6021ed2733cde173f09dba19abb3", size = 1008090, upload-time = "2026-07-04T15:31:20.885Z" },
+]
+
+[[package]]
+name = "shaper-bin"
+version = "0.21.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7c/10/490d505e75912521e53c30fa60dd8340d236df47416a68a30203f9dd1f89/shaper_bin-0.21.0.tar.gz", hash = "sha256:f67a792fca312e10a2e9d11c6c0711dcb274de108fd9a6bf45b39d6d350603e4", size = 8591, upload-time = "2026-07-09T10:50:02.445Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/bb/5286e6fb5d7f01cc454b3fe4a971a0c34fce3696d4009719744a055ce8c1/shaper_bin-0.21.0-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:f6761f0545293b63be328b1c8e0ab09b75d121ffbe476479d3989c0556cb7601", size = 51245838, upload-time = "2026-07-09T10:49:50.961Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/7f/40bfceacb85cb6c7b41f58225e458b2f841f613fea828273002a832cf10c/shaper_bin-0.21.0-py3-none-macosx_11_0_arm64.whl", hash = "sha256:33c8022080c3ecf47140c618b46bc6d4e167d43459b4ecac8aa62435a4fad2f4", size = 47688015, upload-time = "2026-07-09T10:49:54.51Z" },
+    { url = "https://files.pythonhosted.org/packages/ee/82/42cb70e7a73e58c6f2b1e215192ef20c0ad6c5894e20be3d144ecda130fb/shaper_bin-0.21.0-py3-none-manylinux2014_aarch64.whl", hash = "sha256:8542b7ac8f478e8b06be46985b01a183a954ac52cd1754e117622c707fb7abd4", size = 36290342, upload-time = "2026-07-09T10:49:57.176Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/57/d9c8fe12764ac372feb29671b78c011db116e7c9022486d94f7894881375/shaper_bin-0.21.0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:b4275cef9b318c1970c28e7198a8a632a07ed5da79e6424eea26c48e3d8c2ef2", size = 38977240, upload-time = "2026-07-09T10:50:00.078Z" },
 ]
 
 [[package]]

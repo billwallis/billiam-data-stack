@@ -8,6 +8,9 @@ logs/
 .dlt/.sources
 .dlt/secrets.toml
 
+# Shaper
+shaper/
+
 # Google auth
 credentials.json
 token.json
