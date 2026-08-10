@@ -24,6 +24,7 @@ dependencies = [
 dev = [
     "poethepoet>=0.46.0",
     "pre-commit>=4.6.0",
+    "shaper-bin==0.21.0",
 ]
 # for building own OAuth2 server
 oauth2 = [
@@ -104,6 +105,26 @@ shell = """
     SKIP=identity uv run pre-commit run --all-files --hook-stage pre-push
     echo '\\033[0;34msqlmesh checks\\033[0m'
     sqlmesh -p src/transformation lint
+"""
+
+[tool.poe.tasks.deploy-bi]
+control.expr = "sys.platform"
+
+[[tool.poe.tasks.deploy-bi.switch]]
+case = "win32"
+shell = """
+    shaper ids
+    shaper deploy
+    python -c "import time; time.sleep(1)"
+    python -c "import webbrowser; webbrowser.open('http://localhost:5454')"
+"""
+
+[[tool.poe.tasks.deploy-bi.switch]]
+shell = """
+    shaper ids
+    shaper deploy
+    sleep 1
+    open 'http://localhost:5454'
 """
 
 
