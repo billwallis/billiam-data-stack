@@ -1,5 +1,5 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
--- shapersync:2026-08-10T18:36:23Z
+-- shapersync:2026-08-11T08:13:14Z
 
 select 'Finances'::SECTION;
 
@@ -14,6 +14,7 @@ select sum(cost) as "Total net amount"
 from warehouse.finances.transactions
 where transaction_date >= date_trunc('year', current_date)
 ;
+
 
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -32,6 +33,83 @@ where transaction_date >= date_trunc('year', current_date)
 group by rollup (category)
 order by grouping_id(category), total_amount_net desc
 ;
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+select 'Monthly transactions'::SECTION;
+
+select 'Transaction value by month'::SECTION;
+with
+
+axis(transaction_month) as (
+    select date_nk
+    from warehouse.calendar.calendar
+    where 1=1
+        and year_number = year(current_date)
+        and is_month_start
+),
+
+transactions as (
+    select
+        date_trunc('month', transaction_date) as transaction_month,
+        sum(cost) as total_net_amount,
+    from warehouse.finances.transactions
+    where transaction_date >= date_trunc('year', current_date)
+    group by transaction_month
+)
+
+select
+    transaction_month::XAXIS,
+    coalesce(transactions.total_net_amount)::BARCHART,
+    if(transactions.total_net_amount < 0, 'good', 'bad')::CATEGORY,  /* Can we have better names? :laugh: */
+    if(transactions.total_net_amount < 0, '#00ff00', '#ff0000')::COLOR,
+from axis
+    left join transactions
+        using (transaction_month)
+order by transaction_month
+;
+
+select 'Transaction value by month and category'::SECTION;
+with
+
+transactions as (
+    select
+        date_trunc('month', transaction_date) as transaction_month,
+        category,
+        sum(cost) as total_net_amount,
+    from warehouse.finances.transaction_items
+    where transaction_date >= date_trunc('year', current_date)
+    group by transaction_month, category
+),
+
+_months(transaction_month) as (
+    select date_nk
+    from warehouse.calendar.calendar
+    where 1=1
+        and year_number = year(current_date)
+        and is_month_start
+),
+axis as (
+    select transaction_month, category
+    from _months
+        cross join (
+            select distinct category
+            from transactions
+        ) as categories
+)
+
+select
+    transaction_month::XAXIS,
+    category::CATEGORY,
+    coalesce(transactions.total_net_amount, 0)::BARCHART_STACKED,
+from axis
+    left join transactions
+        using (transaction_month, category)
+order by transaction_month, category
+;
+
 
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
