@@ -1,7 +1,7 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
 -- shapersync:2026-08-10T18:36:23Z
 
-select 'Home'::SECTION;
+select 'Finances'::SECTION;
 
 select max(transaction_date) as "Latest transaction date"
 from warehouse.finances.transactions
@@ -15,9 +15,12 @@ from warehouse.finances.transactions
 where transaction_date >= date_trunc('year', current_date)
 ;
 
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
 select 'Categories'::SECTION;
 
-select 'Yearly transactions by category'::LABEL;
+select 'This year''s transactions by category'::LABEL;
 select
     category,
     count(distinct transaction_id) as transactions,
@@ -30,9 +33,12 @@ group by rollup (category)
 order by grouping_id(category), total_amount_net desc
 ;
 
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
 select 'Retailers'::SECTION;
 
-select 'Top retailers (by count)'::LABEL;
+select 'Top retailers this year (by count)'::LABEL;
 select
     counterparty,
     count(*) as total_transations,
@@ -43,7 +49,7 @@ group by counterparty
 order by total_transations desc
 limit 5
 ;
-select 'Top retailers (by value)'::LABEL;
+select 'Top retailers this year (by value)'::LABEL;
 select
     counterparty,
     count(*) as total_transations,
