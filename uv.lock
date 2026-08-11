@@ -38,7 +38,7 @@ wheels = [
 [[package]]
 name = "billiam-data-stack"
 version = "0.0.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "dlt", extra = ["motherduck"] },
     { name = "duckdb" },

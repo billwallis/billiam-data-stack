@@ -21,6 +21,7 @@ model (
             name_with_owner,
             url,
         ]),
+        /* TODO: assert that branches_count > 0 */
         assert__repository_settings_are_correct,
     ),
 );
@@ -103,6 +104,7 @@ repositories as (
         primary_language__color,
         primary_language__id,
         primary_language__name,
+        pull_requests_open__total_count,
         pushed_at,
         rebase_merge_allowed,
         refs_heads__total_count,
@@ -132,10 +134,14 @@ select
     repositories.visibility,
     repositories.url,
     repositories.owner__login as owner_username,
+    (latest.login = repositories.owner__login) as is_own_repo,
 
     /*    Ref counts    */
     repositories.refs_heads__total_count as branches_count,
     repositories.refs_tags__total_count as tags_count,
+
+    /*    Pull requests    */
+    repositories.pull_requests_open__total_count as open_pull_request_count,
 
     /*    Licence    */
     repositories.license_info__id as licence_id,
