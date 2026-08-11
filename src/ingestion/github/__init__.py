@@ -1,4 +1,4 @@
-from src.ingestion.github.main import github_pipeline
+from ingestion.github.main import github_pipeline
 
 __all__ = [
     "github_pipeline",

@@ -77,6 +77,7 @@ select
     primary_language__color,
     primary_language__id,
     primary_language__name,
+    pull_requests_open__total_count,
     pushed_at,
     rebase_merge_allowed,
     refs_heads__total_count,
