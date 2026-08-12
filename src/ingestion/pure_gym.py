@@ -12,6 +12,8 @@ PURE_GYM_RESOURCES: list[EndpointResource] = [
     {
         # Gyms
         "name": "gyms",
+        "write_disposition": "merge",
+        "primary_key": "id",
         "endpoint": {
             "path": "api/v2/gyms",
         },
@@ -26,6 +28,10 @@ PURE_GYM_RESOURCES: list[EndpointResource] = [
     {
         # My gym sessions
         "name": "gym_sessions",
+        "write_disposition": {
+            "disposition": "merge",
+            "strategy": "scd2",
+        },
         "max_table_nesting": 1,
         "endpoint": {
             "path": "api/v2/gymSessions/member",
