@@ -1,0 +1,36 @@
+model (
+    name warehouse.health.heart_rate,
+    kind full,
+    grain (log_ts),
+    tags (oura),
+    columns (
+        log_ts timestamp,
+
+        bpm integer,
+        producer_timestamp bigint,
+        source varchar,
+    ),
+    audits (
+        not_null(columns=[
+            log_ts,
+        ]),
+        unique_values(columns=[
+            log_ts,
+        ]),
+    ),
+);
+
+
+select
+    timezone('Europe/London', "timestamp") as log_ts,
+
+    bpm,
+    producer_timestamp,
+    source,
+from warehouse.raw_oura.heart_rate
+/* Where there are overlapping local timestamps (from DST), take th latest */
+qualify 1 = row_number() over (
+    partition by log_ts
+    order by "timestamp" desc
+)
+;

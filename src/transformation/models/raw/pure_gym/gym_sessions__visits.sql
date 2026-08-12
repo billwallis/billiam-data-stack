@@ -55,7 +55,7 @@ select
         select @dlt_load_ts(gym_sessions._dlt_load_id)
         from landing.pure_gym.gym_sessions
         where gym_sessions__visits._dlt_parent_id = gym_sessions._dlt_id
-    ) as _load_ts
+    ) as _load_ts,
 from landing.pure_gym.gym_sessions__visits
 qualify _load_ts = max(_load_ts) over (partition by visit_id)
 order by visit_id

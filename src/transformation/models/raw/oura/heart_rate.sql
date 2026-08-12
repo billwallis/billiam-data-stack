@@ -1,7 +1,7 @@
 model (
     name warehouse.raw_oura.heart_rate,
     kind full,
-    grain (id),
+    grain (timestamp),
     tags (oura),
     columns (
         timestamp timestamptz,
