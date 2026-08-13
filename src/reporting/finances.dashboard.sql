@@ -1,5 +1,5 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
--- shapersync:2026-08-13T11:58:05Z
+-- shapersync:2026-08-13T12:03:46Z
 
 select 'Finances'::SECTION;
 
@@ -19,28 +19,9 @@ where transaction_date >= date_trunc('year', current_date)
 ------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
 
-select 'Categories'::SECTION;
-
-select 'This year''s transactions by category'::LABEL;
-select
-    category,
-    count(distinct transaction_id) as transactions,
-    sum(cost) as total_amount_net,
-    sum(if(cost > 0, cost, 0)) as total_amount_out,
-    sum(if(cost < 0, cost, 0)) as total_amount_in,
-from warehouse.finances.transaction_items
-where transaction_date >= date_trunc('year', current_date)
-group by rollup (category)
-order by grouping_id(category), total_amount_net desc
-;
-
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
 select 'Monthly transactions'::SECTION;
 
-select 'Transaction value by month'::SECTION;
+select 'Transaction value by month'::LABEL;
 with
 
 axis(transaction_month) as (
@@ -71,7 +52,9 @@ from axis
 order by transaction_month
 ;
 
-select 'Transaction value by month and category'::SECTION;
+select ''::SECTION;
+
+select 'Transaction value by month and category'::LABEL;
 with
 
 transactions as (
@@ -108,6 +91,21 @@ from axis
     left join transactions
         using (transaction_month, category)
 order by transaction_month, category
+;
+
+select 'Categories'::SECTION;
+
+select 'This year''s transactions by category'::LABEL;
+select
+    category,
+    count(distinct transaction_id) as transactions,
+    sum(cost) as total_amount_net,
+    sum(if(cost > 0, cost, 0)) as total_amount_out,
+    sum(if(cost < 0, cost, 0)) as total_amount_in,
+from warehouse.finances.transaction_items
+where transaction_date >= date_trunc('year', current_date)
+group by rollup (category)
+order by grouping_id(category), total_amount_net desc
 ;
 
 
