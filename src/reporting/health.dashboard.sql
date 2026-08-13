@@ -1,5 +1,5 @@
 -- shaperid:cjgduxms6ra6uv7ny2mr77go
--- shapersync:2026-08-12T21:03:12Z
+-- shapersync:2026-08-13T07:56:56Z
 
 select 'Health'::SECTION;
 
@@ -14,11 +14,13 @@ select
     ) as "Gym visits this month",
     (
         select count(*)
-        from warehouse.health.gym_visits
+        from warehouse.calendar.calendar
         where 1=1
-            and start_time <  (current_date - interval '1 month')::timestamp
-            and start_time >= date_trunc('month', current_date)::timestamp - interval '1 month'
-    )::COMPARE as "Gym visits this time last month",
+            and date_nk < current_date
+            and (year_number, month_number) = (year(current_date), month(current_date))
+            -- Currently committed to going on these days
+            and day_name in ('Sunday', 'Wednesday')
+    )::COMPARE as "Planned gym visits",
 ;
 
 

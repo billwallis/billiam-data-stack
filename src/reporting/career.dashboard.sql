@@ -1,5 +1,5 @@
 -- shaperid:lwl2v5kh7d2cn27kk4s8f8qc
--- shapersync:2026-08-12T08:54:27Z
+-- shapersync:2026-08-13T07:50:54Z
 
 select 'Career'::SECTION;
 
@@ -117,6 +117,41 @@ select
     meeting_time_proportion::LINECHART,
 from metrics
 order by metric_month, company
+;
+
+select 'Calendar'::SECTION;
+
+select 'Daily work hours (ideally this would be a heatmap, like GitHub contributions)'::LABEL;
+with
+
+axis as (
+    select
+        date_nk,
+        day_name,
+        -- `week_number` expects Monday to be start of week
+        if(day_of_week_number = 0, 7, day_of_week_number) as day_of_week_number,
+        week_number,
+    from warehouse.calendar.calendar
+    -- where year_number = year(current_date)
+    where (year_number, month_number) = (year(current_date), month(current_date))
+),
+
+metrics as (
+    select
+        date_nk,
+        concat(axis.day_of_week_number, ' ', axis.day_name) as day_of_week,
+        format('{:02d}', axis.week_number) as week_number,
+        coalesce(daily_metrics.total_working_time, 0) /60 as total_working_hours,
+    from axis
+        left join warehouse.bi.daily_metrics
+            on axis.date_nk = daily_metrics.metric_date
+)
+
+pivot metrics
+on week_number
+using any_value(total_working_hours)
+group by day_of_week
+order by day_of_week
 ;
 
 
