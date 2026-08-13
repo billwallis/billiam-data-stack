@@ -60,7 +60,7 @@ oauth2 = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dlt", extras = ["motherduck"], specifier = ">=1.23.0" },
+    { name = "dlt", extras = ["motherduck"], specifier = ">=1.28.1" },
     { name = "duckdb", specifier = ">=1.5.0,<=1.5.3" },
     { name = "google-api-python-client", specifier = ">=2.190.0" },
     { name = "google-auth-httplib2", specifier = ">=0.3.0" },
