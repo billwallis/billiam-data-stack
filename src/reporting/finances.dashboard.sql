@@ -1,5 +1,5 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
--- shapersync:2026-08-11T08:13:14Z
+-- shapersync:2026-08-13T11:58:05Z
 
 select 'Finances'::SECTION;
 
@@ -62,7 +62,7 @@ transactions as (
 
 select
     transaction_month::XAXIS,
-    coalesce(transactions.total_net_amount)::BARCHART,
+    coalesce(transactions.total_net_amount)::BARCHART_STACKED,
     if(transactions.total_net_amount < 0, 'good', 'bad')::CATEGORY,  /* Can we have better names? :laugh: */
     if(transactions.total_net_amount < 0, '#00ff00', '#ff0000')::COLOR,
 from axis
