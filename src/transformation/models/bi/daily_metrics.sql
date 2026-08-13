@@ -46,6 +46,7 @@ daily_work as (
         round(100.0 * meeting_time / total_working_time, 4) as meeting_proportion,
         round(100.0 * meeting_time / least(total_working_time, 7.5 * 60), 4) as working_day_meeting_proportion,
     from warehouse.career.daily_tracker
+    where project != 'Lunch Break'
     group by metric_date
 )
 
