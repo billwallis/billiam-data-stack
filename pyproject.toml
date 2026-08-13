@@ -61,11 +61,10 @@ auth.shell = """
 
 # SQLMesh wrappers (`cmd` rather than `shell` for colour output)
 run = [
+    "docker-up",
     {cmd = "uv run -m src.ingestion"},
     {cmd = "sqlmesh -p src/transformation run dev  --ignore-cron"},
     {cmd = "sqlmesh -p src/transformation run prod --ignore-cron"},
-    "docker-up",
-    {cmd = "python -c 'import time; time.sleep(3)'"},
     "deploy-bi",
 ]
 clean = [
