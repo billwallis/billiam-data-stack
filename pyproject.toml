@@ -65,9 +65,8 @@ run = [
     {cmd = "sqlmesh -p src/transformation run dev  --ignore-cron"},
     {cmd = "sqlmesh -p src/transformation run prod --ignore-cron"},
     "docker-up",
-    {cmd = "python -c 'import time; time.sleep(1)'"},
+    {cmd = "python -c 'import time; time.sleep(3)'"},
     "deploy-bi",
-    "docker-down",
 ]
 clean = [
     {cmd = "sqlmesh -p src/transformation clean"},
