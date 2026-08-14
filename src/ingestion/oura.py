@@ -19,6 +19,7 @@ import dlt.sources.rest_api
 from dlt.sources import DltSource
 from dlt.sources.helpers.rest_client.auth import BearerTokenAuth
 from dlt.sources.helpers.rest_client.paginators import (
+    JSONResponseCursorPaginator,
     SinglePagePaginator,
 )
 from dlt.sources.rest_api import EndpointResource, rest_api_source
@@ -208,6 +209,11 @@ OURA_RESOURCES: list[EndpointResource] = [
         "primary_key": "timestamp",
         "endpoint": {
             "path": "v2/usercollection/heartrate",
+            "data_selector": "",
+            "paginator": JSONResponseCursorPaginator(
+                cursor_path="next_token",
+                cursor_param="next_token",
+            ),
             "params": {
                 "start_datetime": FROM_DATETIME,
                 "end_datetime": UNTIL_DATETIME,
@@ -220,6 +226,11 @@ OURA_RESOURCES: list[EndpointResource] = [
         "primary_key": "timestamp",
         "endpoint": {
             "path": "v2/usercollection/ring_battery_level",
+            "data_selector": "",
+            "paginator": JSONResponseCursorPaginator(
+                cursor_path="next_token",
+                cursor_param="next_token",
+            ),
             "params": {
                 "start_datetime": FROM_DATETIME,
                 "end_datetime": UNTIL_DATETIME,
