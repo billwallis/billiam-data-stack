@@ -114,12 +114,12 @@ control.expr = "sys.platform"
 
 [[tool.poe.tasks.deploy-bi.switch]]
 case = "win32"
-shell = """
-    shaper ids
-    shaper deploy
-    python -c "import time; time.sleep(1)"
-    python -c "import webbrowser; webbrowser.open('http://localhost:5454')"
-"""
+sequence = [
+    {cmd = "docker run --rm --mount type=bind,source=./tmp/shaper.json,target=/shaper.json --volume ./src/reporting:/src/reporting --network shaper taleshape/shaper:0.21.0 shaper ids"},
+    {cmd = "docker run --rm --mount type=bind,source=./tmp/shaper.json,target=/shaper.json --volume ./src/reporting:/src/reporting --network shaper taleshape/shaper:0.21.0 shaper deploy"},
+    {cmd = "python -c 'import time; time.sleep(1)'"},
+    {cmd = """python -c 'import webbrowser; webbrowser.open("http://localhost:5454")'"""},
+]
 
 [[tool.poe.tasks.deploy-bi.switch]]
 shell = """
