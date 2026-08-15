@@ -1,5 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-go/master/schema/compose-spec.json
 ---
+networks:
+  shaper:
+    name: shaper
+
 services:
   shaper:
     image: taleshape/shaper:0.21.0
@@ -10,5 +14,6 @@ services:
         source: ./shaper
         target: /data
     ports: ["5454:5454"]  # http://localhost:5454/
+    networks: ["shaper"]
     environment:
       MOTHERDUCK_TOKEN: $MOTHERDUCK_TOKEN
