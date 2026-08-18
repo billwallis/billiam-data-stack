@@ -1,0 +1,27 @@
+# https://taleshape.com/shaper/docs/api-endpoints/
+
+@base_url=http://localhost:5454
+@dashboard_career_id=lwl2v5kh7d2cn27kk4s8f8qc
+@dashboard_coding_id=y6c1lcqk7g98zadea0dhz2m4
+@dashboard_finances_id=gj3macp27jf7ol0kzueeao5z
+@dashboard_health_id=cjgduxms6ra6uv7ny2mr77go
+
+# https://taleshape.com/shaper/docs/api-endpoints/#get-apischema
+### GET /api/schema
+GET {{ base_url }}/api/schema
+
+
+# https://taleshape.com/shaper/docs/api-endpoints/#get-apidashboardsiddownloadfile
+### GET /api/dashboards/:id/download/:file
+GET {{ base_url }}/api/dashboards/{{ dashboard_career_id }}/download/export.pdf
+#    ?mode=url
+
+
+#----------------------------------------------------------------------#
+# Undocumented--but useful--public endpoints (most others need a JWT)
+
+### GET system config
+GET {{ base_url }}/api/system/config
+
+### GET all applications
+GET {{ base_url }}/api/apps
