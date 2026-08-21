@@ -1,0 +1,9 @@
+---
+title: Career
+---
+erDiagram
+    employer ||--o{ role : employs
+    role ||--o{ absence : "occasionally has"
+    role ||--o{ contracted_hours : has
+    role ||--o{ project : completes
+    project ||--o{ task : "is composed of"
