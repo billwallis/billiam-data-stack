@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.workout,
     kind full,
     grain (id),

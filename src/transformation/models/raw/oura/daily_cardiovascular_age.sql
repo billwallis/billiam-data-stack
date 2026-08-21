@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.daily_cardiovascular_age,
     kind full,
     grain (id),

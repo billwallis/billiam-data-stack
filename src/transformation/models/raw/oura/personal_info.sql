@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.personal_info,
     kind full,
     grain (id),
