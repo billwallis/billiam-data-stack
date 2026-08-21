@@ -28,7 +28,7 @@ select
     producer_timestamp,
     source,
 from warehouse.raw_oura.heart_rate
-/* Where there are overlapping local timestamps (from DST), take th latest */
+/* Where there are overlapping local timestamps (from DST), take the latest */
 qualify 1 = row_number() over (
     partition by log_ts
     order by "timestamp" desc

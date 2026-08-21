@@ -5,7 +5,7 @@ model (
     tags (oura),
     columns (
         id varchar,
-        day date,
+        "day" date,
 
         day_summary varchar,
         recovery_high integer,
@@ -18,14 +18,14 @@ model (
     audits (
         not_null(columns=[
             id,
-            day,
+            "day",
             _dlt_id,
             _dlt_load_id,
             _load_ts,
         ]),
         unique_values(columns=[
             id,
-            day,
+            "day",
             _dlt_id,
         ]),
     ),
