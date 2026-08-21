@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.rest_mode_period,
     kind full,
     grain (id, episodes__timestamp),

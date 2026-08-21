@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.sleep_time,
     kind full,
     grain (id),

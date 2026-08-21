@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_notion.data_source_page_content,
     kind full,
     grain (block_id),

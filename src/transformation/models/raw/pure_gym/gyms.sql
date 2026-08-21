@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_pure_gym.gyms,
     kind full,
     grain (gym_id),

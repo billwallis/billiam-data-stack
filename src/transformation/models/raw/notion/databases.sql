@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_notion.databases,
     kind full,
     grain (database_id),

@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.ring_battery_level,
     kind full,
     grain (timestamp),

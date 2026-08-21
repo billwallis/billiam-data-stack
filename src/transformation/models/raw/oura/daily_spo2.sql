@@ -1,4 +1,5 @@
 model (
+    enabled false,
     name warehouse.raw_oura.daily_spo2,
     kind full,
     grain (id),
