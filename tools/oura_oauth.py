@@ -30,9 +30,8 @@ import flask
 from dlt.sources.helpers import requests
 
 HERE = pathlib.Path(__file__).parent
-SRC_PATH = HERE.parent
-assert SRC_PATH.name == "src"  # noqa: S101
-CLIENT_TOKEN_PATH = SRC_PATH.parent / "oura-credentials.json"
+assert HERE.name == "tools", f"'{HERE.name}' != 'tools'"  # noqa: S101
+CLIENT_TOKEN_PATH = HERE.parent / "oura-credentials.json"
 CLIENT_HOST = "localhost"
 CLIENT_PORT = 3030
 # noinspection HttpUrlsUsage
