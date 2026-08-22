@@ -1,5 +1,5 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
--- shapersync:2026-08-13T12:03:46Z
+-- shapersync:2026-08-22T09:02:32Z
 
 select 'Finances'::SECTION;
 
@@ -135,4 +135,36 @@ where transaction_date >= date_trunc('year', current_date)
 group by counterparty
 order by total_net_amount desc
 limit 5
+;
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+select 'Benford''s Law'::SECTION;
+
+with metrics as (
+    unpivot (
+        select
+            n,
+            row_digit_proportion,
+            transaction_digit_proportion,
+            cost_digit_proportion,
+            rounded_cost_digit_proportion,
+        from warehouse.ops.benfords_law
+    )
+    on
+        row_digit_proportion,
+        transaction_digit_proportion,
+        cost_digit_proportion,
+        rounded_cost_digit_proportion
+    into name metric_name value metric_value
+)
+
+select
+    n::XAXIS,
+    metric_name::CATEGORY,
+    metric_value::LINECHART,
+from metrics
+order by n
 ;
