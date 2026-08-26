@@ -1,5 +1,5 @@
 -- shaperid:y6c1lcqk7g98zadea0dhz2m4
--- shapersync:2026-08-13T05:50:56Z
+-- shapersync:2026-08-26T11:07:55Z
 
 select 'Coding'::SECTION;
 
@@ -106,5 +106,24 @@ select
     list(setting order by setting) filter (where is_misconfigured) as issues,
 group by url
 having issues is not null
+order by url
+;
+
+select 'Repositories still using uv'::SECTION;
+
+select (count(*)::text)::TEXT_LARGE as "Repositories"
+from warehouse.coding.github_repositories
+where 1=1
+    and is_own_repo
+    and uses_uv
+    and not is_archived
+;
+
+select url
+from warehouse.coding.github_repositories
+where 1=1
+    and is_own_repo
+    and uses_uv
+    and not is_archived
 order by url
 ;
