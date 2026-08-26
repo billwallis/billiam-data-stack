@@ -73,6 +73,8 @@ query($user: String!, $page_size: Int!, $cursor: String) {
                 usesCustomOpenGraphImage
                 visibility
                 webCommitSignoffRequired
+
+                uvLock: object(expression: "main:uv.lock") {id oid}
             }
         }
     }
