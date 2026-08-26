@@ -117,6 +117,7 @@ repositories as (
         updated_at,
         url,
         uses_custom_open_graph_image,
+        uv_lock__id,
         visibility,
         web_commit_signoff_required,
         _dlt_list_idx,
@@ -234,6 +235,9 @@ select
     repositories.plan_features__maximum_assignees,
     repositories.plan_features__maximum_manual_review_requests,
     repositories.plan_features__team_review_requests,
+
+    /* Content flags */
+    repositories.uv_lock__id is not null as uses_uv,
 
     latest._load_ts,
 from latest
