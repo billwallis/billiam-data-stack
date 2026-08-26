@@ -90,6 +90,8 @@ select
     updated_at,
     url,
     uses_custom_open_graph_image,
+    uv_lock__id,
+    uv_lock__oid,
     visibility,
     web_commit_signoff_required,
 
