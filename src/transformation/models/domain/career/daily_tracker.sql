@@ -8,6 +8,17 @@ model (
         detail varchar,
         minutes int,
     ),
+    audits (
+        not_null(columns=[
+            log_ts,
+            project,
+            detail,
+            minutes,
+        ]),
+        unique_values(columns=[
+            log_ts,
+        ]),
+    ),
 );
 
 
