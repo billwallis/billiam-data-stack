@@ -28,23 +28,25 @@ jobs:
       - name: 🛎️ Check out repository
         uses: actions/checkout@v6
 
-      - name: 📦 Set up uv
-        uses: astral-sh/setup-uv@v7
-        with: { enable-cache: true }
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: pyproject.toml
+          cache: "pip"
 
       - name: 🔨 Install dependencies
-        run: uv sync --all-groups
+        run: pip install --editable .
 
       - name: ✅ Run SQLMesh bot
         if: github.event.pull_request.merged == false
         run: >
-          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} run-all
+          sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} run-all
         env:
           MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
 
 #      - name: 🚀 Deploy to production
 #        if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
 #        run: >
-#          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} deploy-production
+#          sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} deploy-production
 #        env:
 #          MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
