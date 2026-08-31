@@ -155,7 +155,7 @@ def american_express_pipeline(
 
 if __name__ == "__main__":
     # https://global.americanexpress.com/activity/statements
-    # uv run -m src.ingestion.american_express
+    # python -m src.ingestion.american_express
 
     # resp = _get_american_express_statement(
     #     cookie=read_cookie(),

@@ -40,13 +40,13 @@ jobs:
       - name: ✅ Run SQLMesh bot
         if: github.event.pull_request.merged == false
         run: >
-          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} run-all
+          sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} run-all
         env:
           MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
 
 #      - name: 🚀 Deploy to production
 #        if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
 #        run: >
-#          uv run sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} deploy-production
+#          sqlmesh_cicd --paths src/transformation github --token ${{ secrets.GITHUB_TOKEN }} deploy-production
 #        env:
 #          MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
