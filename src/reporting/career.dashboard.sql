@@ -14,7 +14,9 @@ where 1=1
 ;
 select min(date_nk) as "Next bank holiday"
 from warehouse.calendar.bank_holidays
-where date_nk >= current_date
+where 1=1
+    and date_nk >= current_date
+    and region = 'england-and-wales'
 ;
 
 
