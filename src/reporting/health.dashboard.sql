@@ -35,7 +35,7 @@ select
     min(bpm)::BAND_LOWER,
     avg(bpm)::LINECHART,
     max(bpm)::BAND_UPPER,
-from warehouse.health.heart_rate
+from warehouse.health.heartrate
 where log_ts >= date_trunc('month', current_date)::timestamp
 group by log_hour
 order by log_hour
@@ -49,7 +49,7 @@ select
     min(bpm)::BAND_LOWER,
     avg(bpm)::LINECHART,
     max(bpm)::BAND_UPPER,
-from warehouse.health.heart_rate
+from warehouse.health.heartrate
 where log_ts >= date_trunc('month', current_date)::timestamp
 group by date_nk
 order by date_nk

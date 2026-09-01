@@ -1,5 +1,5 @@
 model (
-    name warehouse.health.heart_rate,
+    name warehouse.health.heartrate,
     kind full,
     grain (log_ts),
     tags (oura),
@@ -27,7 +27,7 @@ select
     bpm,
     producer_timestamp,
     source,
-from warehouse.raw_oura.heart_rate
+from warehouse.raw_oura.heartrate
 /* Where there are overlapping local timestamps (from DST), take the latest */
 qualify 1 = row_number() over (
     partition by log_ts

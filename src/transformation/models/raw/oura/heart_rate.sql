@@ -1,5 +1,5 @@
 model (
-    name warehouse.raw_oura.heart_rate,
+    name warehouse.raw_oura.heartrate,
     kind full,
     grain (timestamp),
     tags (oura),
