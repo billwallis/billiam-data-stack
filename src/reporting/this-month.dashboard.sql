@@ -13,7 +13,7 @@ hours_worked(hours_worked) as (
 ),
 
 absent_hours(absent_hours) as (
-    select sum(hours)
+    select coalesce(sum(hours), 0)
     from warehouse.career.work_absences
     where absence_date between date_trunc('month', current_date)
                            and current_date - interval '1 day'
