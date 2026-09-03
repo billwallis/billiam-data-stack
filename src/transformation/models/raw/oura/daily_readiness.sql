@@ -18,7 +18,7 @@ model (
         contributors__previous_day_activity integer,
         contributors__previous_night integer,
         contributors__recovery_index integer,
-        contributors__resting_heart_rate integer,
+        contributors__resting_heartrate integer,
         contributors__sleep_balance integer,
         contributors__sleep_regularity integer,
 
@@ -61,7 +61,7 @@ select
     contributors->>'$.previous_day_activity' as contributors__previous_day_activity,
     contributors->>'$.previous_night' as contributors__previous_night,
     contributors->>'$.recovery_index' as contributors__recovery_index,
-    contributors->>'$.resting_heart_rate' as contributors__resting_heart_rate,
+    contributors->>'$.resting_heart_rate' as contributors__resting_heartrate,
     contributors->>'$.sleep_balance' as contributors__sleep_balance,
     contributors->>'$.sleep_regularity' as contributors__sleep_regularity,
 

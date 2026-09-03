@@ -14,7 +14,9 @@ where 1=1
 ;
 select min(date_nk) as "Next bank holiday"
 from warehouse.calendar.bank_holidays
-where date_nk >= current_date
+where 1=1
+    and date_nk >= current_date
+    and region = 'england-and-wales'
 ;
 
 
@@ -179,4 +181,39 @@ select
     bradford_factor,
 from warehouse.ops.bradford_factor
 order by instance_id
+;
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+select ''::SECTION;
+
+select 'Weekly sentiment'::LABEL;
+with weekly_sentiment as (
+    select
+        start_date,
+        sentiment,
+        case sentiment
+            when 'Went poorly'   then 0
+            when 'Normal sprint' then 1
+            when 'Went well'     then 2
+        end as sentiment_score,
+    from warehouse.career.sprint_updates
+    where 1=1
+        and sentiment is not null
+        and end_date >= (
+            select min(start_date)
+            from warehouse.career.employment
+            where company = 'Tasman'
+        )
+)
+
+select
+    start_date::XAXIS,
+    sentiment_score::LINECHART,
+    0::BAND_LOWER,
+    sentiment_score::BAND_UPPER,
+from weekly_sentiment
+order by start_date
 ;
