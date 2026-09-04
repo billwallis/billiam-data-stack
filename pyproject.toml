@@ -53,8 +53,8 @@ run = [
     {cmd = "docker desktop start"},
     "docker-up",
     {cmd = "python -m src.ingestion"},
-    {cmd = "sqlmesh -p src/transformation run dev  --ignore-cron"},
-    {cmd = "sqlmesh -p src/transformation run prod --ignore-cron"},
+    {cmd = "sqlmesh -p src/transformation run --ignore-cron dev"},
+    {cmd = "sqlmesh -p src/transformation run --ignore-cron prod"},
     "deploy-bi",
 ]
 clean = [

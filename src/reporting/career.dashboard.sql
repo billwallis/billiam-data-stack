@@ -217,3 +217,31 @@ select
 from weekly_sentiment
 order by start_date
 ;
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+select ''::SECTION;
+
+select
+    ((current_date - interval '14 days')::date)::DATEPICKER_FROM as from_date,
+    (current_date)::DATEPICKER_TO as until_date,
+;
+
+select 'Career daily log'::LABEL;
+select
+    strftime(date_nk, '%Y-%m-%d') as date_nk,
+    day_name,
+    is_working_day as working_day,
+    contracted_hours as contracted,
+    absent_hours as absent,
+    -- expected_hours as expected,
+    hours_worked as worked,
+    extra_hours as extra,
+    sum(extra_hours) over (order by date_nk) as extra_cumulative,
+from warehouse.bi.career_daily_log
+where career_daily_log.date_nk between getvariable('from_date')
+                                   and getvariable('until_date')
+order by date_nk
+;

@@ -12,6 +12,21 @@ model (
         meeting_proportion decimal(8, 4),
         working_day_meeting_proportion decimal(8, 4),
     ),
+    audits (
+        not_null(columns=[
+            metric_date,
+            total_cost,
+            non_essential_cost,
+            non_essential_cost_proportion,
+            total_working_time,
+            meeting_time,
+            meeting_proportion,
+            working_day_meeting_proportion,
+        ]),
+        unique_values(columns=[
+            metric_date,
+        ]),
+    ),
 );
 
 
