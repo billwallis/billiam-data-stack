@@ -228,6 +228,22 @@ select
     ((current_date - interval '14 days')::date)::DATEPICKER_FROM as from_date,
     (current_date)::DATEPICKER_TO as until_date,
 ;
+create or replace temporary table filtered_daily_log as
+select
+    -- strftime(date_nk, '%Y-%m-%d') as date_nk,
+    date_nk,
+    day_name,
+    is_working_day,
+    contracted_hours,
+    absent_hours,
+    expected_hours,
+    hours_worked,
+    extra_hours,
+    sum(extra_hours) over (order by date_nk) as extra_hours_cumulative,
+from warehouse.bi.career_daily_log
+where date_nk between getvariable('from_date')
+                  and getvariable('until_date')
+;
 
 select 'Career daily log'::LABEL;
 select
@@ -236,12 +252,21 @@ select
     is_working_day as working_day,
     contracted_hours as contracted,
     absent_hours as absent,
-    -- expected_hours as expected,
     hours_worked as worked,
     extra_hours as extra,
-    sum(extra_hours) over (order by date_nk) as extra_cumulative,
-from warehouse.bi.career_daily_log
-where career_daily_log.date_nk between getvariable('from_date')
-                                   and getvariable('until_date')
+    extra_hours_cumulative as extra_cumulative,
+from filtered_daily_log
+order by date_nk
+;
+
+select ''::SECTION;
+
+select 'Cumulative extra hours'::LABEL;
+select
+    date_nk::XAXIS,
+    extra_hours_cumulative::LINECHART,
+    0::BAND_LOWER,
+    extra_hours_cumulative::BAND_UPPER,
+from filtered_daily_log
 order by date_nk
 ;
