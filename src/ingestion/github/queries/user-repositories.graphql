@@ -75,6 +75,9 @@ query($user: String!, $page_size: Int!, $cursor: String) {
                 webCommitSignoffRequired
 
                 uvLock: object(expression: "main:uv.lock") {id oid}
+                coverageSVG: object(expression: "main:coverage.svg") {
+                    id oid ... on Blob {text}
+                }
             }
         }
     }

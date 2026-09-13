@@ -21,7 +21,6 @@ model (
             name_with_owner,
             url,
         ]),
-        /* TODO: assert that branches_count > 0 */
         assert__repository_settings_are_correct,
     ),
 );
@@ -118,6 +117,7 @@ repositories as (
         url,
         uses_custom_open_graph_image,
         uv_lock__id,
+        coverage_svg__text,
         visibility,
         web_commit_signoff_required,
         _dlt_list_idx,
@@ -238,6 +238,13 @@ select
 
     /* Content flags */
     repositories.uv_lock__id is not null as uses_uv,
+    0.01 * try_cast(
+        regexp_extract(
+            coverage_svg__text,
+            '.*<title>coverage: ([\d.]+)%</title>.*',
+            1
+        ) as decimal(6, 2)
+    ) as coverage_percentage,
 
     latest._load_ts,
 from latest
@@ -265,6 +272,7 @@ with my_active_repos as (
         /* return True if the repo should be flagged as "misconfigured" */
         nullif(description, '') is null as description_is_null,
         not ends_with(description, '.') as incorrect_description_terminator,
+        branches_count = 0 as has_no_branches,
         licence_id is null as not_has_license,
         (not is_private and not auto_merge_allowed) as auto_merge_not_allowed,
         not delete_branch_on_merge as delete_branch_on_merge_not_allowed,

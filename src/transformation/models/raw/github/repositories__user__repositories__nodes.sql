@@ -92,6 +92,9 @@ select
     uses_custom_open_graph_image,
     uv_lock__id,
     uv_lock__oid,
+    coverage_svg__id,
+    coverage_svg__oid,
+    coverage_svg__text,
     visibility,
     web_commit_signoff_required,
 
