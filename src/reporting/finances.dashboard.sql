@@ -1,5 +1,5 @@
 -- shaperid:gj3macp27jf7ol0kzueeao5z
--- shapersync:2026-08-22T09:02:32Z
+-- shapersync:2026-09-13T13:02:29Z
 
 select 'Finances'::SECTION;
 
@@ -106,6 +106,54 @@ from warehouse.finances.transaction_items
 where transaction_date >= date_trunc('year', current_date)
 group by rollup (category)
 order by grouping_id(category), total_amount_net desc
+;
+
+
+------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+
+select 'Amazon transactions'::SECTION;
+
+create or replace temporary table amazon_transactions_by_month as
+select
+    date_trunc('month', transaction_date) as transaction_month,
+    sum(cost) as total_spent,
+    count(*) as items_purchased,
+    count(distinct transaction_id) as total_transactions,
+from warehouse.finances.transaction_items
+where 1=1
+    and transaction_date >= date_trunc('month', current_date) - interval '3 years'
+    and counterparty in ('Amazon', 'Amazon Prime Video')
+group by transaction_month
+order by transaction_month
+;
+
+select 'Total spent'::LABEL;
+select
+    transaction_month::XAXIS,
+    total_spent::LINECHART
+from amazon_transactions_by_month
+order by transaction_month
+;
+
+-- select ''::SECTION;
+--
+-- select 'Items purchased'::LABEL;
+-- select
+--     transaction_month::XAXIS,
+--     items_purchased::LINECHART,
+-- from amazon_transactions_by_month
+-- order by transaction_month
+-- ;
+
+select ''::SECTION;
+
+select 'Total transactions'::LABEL;
+select
+    transaction_month::XAXIS,
+    total_transactions::LINECHART,
+from amazon_transactions_by_month
+order by transaction_month
 ;
 
 
