@@ -19,9 +19,6 @@ Supersedes https://github.com/billwallis/billiam-database.
 Install the dependencies:
 
 ```shell
-python -m venv .venv/
-source .venv/bin/activate
-
 pip install --editable . --group dev
 pre-commit install --install-hooks
 ```
