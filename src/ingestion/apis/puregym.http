@@ -1,0 +1,40 @@
+@url=https://capi.puregym.com/api/v2
+
+### PureGym login
+POST https://auth.puregym.com/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password
+&client_id=ro.client
+&scope=pgcapi
+&username={{ puregym-email }}
+&password={{ puregym-password }}
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+    client.test("User can log in", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### Get gyms
+GET {{ url }}/gyms
+Content-Type: application/x-www-form-urlencoded
+User-Agent: PureGym/1523 CFNetwork/1312 Darwin/21.0.0
+Authorization: Bearer {{ auth_token }}
+
+
+### Get my gym
+GET {{ url }}/member
+Authorization: Bearer {{ auth_token }}
+
+
+### Get current gym attendence
+GET {{ url }}/gymSessions/gym?gymId=110
+Authorization: Bearer {{ auth_token }}
+
+
+### Get my gym activity
+GET {{ url }}/gymSessions/member
+Authorization: Bearer {{ auth_token }}
