@@ -1,5 +1,5 @@
 -- shaperid:y6c1lcqk7g98zadea0dhz2m4
--- shapersync:2026-08-26T11:07:55Z
+-- shapersync:2026-09-13T12:51:06Z
 
 select 'Coding'::SECTION;
 
@@ -45,6 +45,7 @@ where 1=1
     and open_pull_request_count != 0
 order by open_prs desc, url
 ;
+
 
 select ''::SECTION;
 
@@ -109,6 +110,7 @@ having issues is not null
 order by url
 ;
 
+
 select 'Repositories still using uv'::SECTION;
 
 select (count(*)::text)::TEXT_LARGE as "Repositories"
@@ -124,6 +126,26 @@ from warehouse.coding.github_repositories
 where 1=1
     and is_own_repo
     and uses_uv
+    and not is_archived
+order by url
+;
+
+
+select 'Repositories with poor coverage'::SECTION;
+
+select (count(*)::text)::TEXT_LARGE as "Repositories"
+from warehouse.coding.github_repositories
+where 1=1
+    and is_own_repo
+    and coverage_percentage < 0.8
+    and not is_archived
+;
+
+select url
+from warehouse.coding.github_repositories
+where 1=1
+    and is_own_repo
+    and coverage_percentage < 0.8
     and not is_archived
 order by url
 ;
