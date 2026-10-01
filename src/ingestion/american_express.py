@@ -27,6 +27,7 @@ logger = logging.getLogger("ingestion")
 
 def read_cookie() -> str:
     # Get the cookie from the header of a manually downloaded CSV
+    # https://global.americanexpress.com/activity/statements
     return (HERE / "amex-cookie").read_text().strip()
 
 
