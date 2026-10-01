@@ -88,11 +88,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             ],
         )
 
-    # Run Notion
-    if "notion" in args.sources or args.sources == []:
-        notion_token = _ensure_env("NOTION_API_TOKEN")
-        ingestion.notion.notion_pipeline(api_token=notion_token)
-
     # Run PureGym
     if "puregym" in args.sources or args.sources == []:
         pure_gym_username = _ensure_env("PURE_GYM_USERNAME")
