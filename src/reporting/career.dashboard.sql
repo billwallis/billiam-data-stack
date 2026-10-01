@@ -189,41 +189,6 @@ order by instance_id
 
 select ''::SECTION;
 
-select 'Weekly sentiment'::LABEL;
-with weekly_sentiment as (
-    select
-        start_date,
-        sentiment,
-        case sentiment
-            when 'Went poorly'   then 0
-            when 'Normal sprint' then 1
-            when 'Went well'     then 2
-        end as sentiment_score,
-    from warehouse.career.sprint_updates
-    where 1=1
-        and sentiment is not null
-        and end_date >= (
-            select min(start_date)
-            from warehouse.career.employment
-            where company = 'Tasman'
-        )
-)
-
-select
-    start_date::XAXIS,
-    sentiment_score::LINECHART,
-    0::BAND_LOWER,
-    sentiment_score::BAND_UPPER,
-from weekly_sentiment
-order by start_date
-;
-
-
-------------------------------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------------------------------
-
-select ''::SECTION;
-
 select
     ((current_date - interval '14 days')::date)::DATEPICKER_FROM as from_date,
     (current_date)::DATEPICKER_TO as until_date,
