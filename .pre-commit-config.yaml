@@ -20,6 +20,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: mixed-line-ending
+        args: ["--fix", "lf"]
       - id: check-added-large-files
       - id: check-json
       - id: check-yaml
@@ -51,7 +52,7 @@ repos:
           entry: check-jsonschema
           pass_filenames: true
           language: python
-          additional_dependencies: ["check-jsonschema==0.37.2"]
+          additional_dependencies: ["check-jsonschema==0.38.2"]
           # This calls a remote URL, so run on pre-push to avoid slowing down commits
           stages: ["pre-push"]
         id: check-pyproject-schema
