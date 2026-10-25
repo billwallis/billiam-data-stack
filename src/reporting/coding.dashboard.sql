@@ -71,7 +71,12 @@ with my_active_repos as (
         (not is_private and not auto_merge_allowed) as auto_merge_not_allowed,
         not delete_branch_on_merge as delete_branch_on_merge_not_allowed,
         not forking_allowed as forking_not_allowed,
-        has_discussions_enabled,
+        /* TODO: This is a duplicate of the audit in `src/transformation/models/domain/coding/github_repositories.sql` */
+        if(
+            name_with_owner = 'billwallis/community-health-files',
+            not has_discussions_enabled,  /* We _want_ this repo to have discussions */
+            has_discussions_enabled
+        ) as has_discussions_enabled,
         not has_issues_enabled as issues_not_enabled,
         has_projects_enabled,
         not has_vulnerability_alerts_enabled as vulnerability_alerts_not_enabled,
