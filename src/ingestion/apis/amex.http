@@ -1,0 +1,13 @@
+@url=https://global.americanexpress.com/api/servicing/v1
+
+
+### Get statement CSV
+GET {{ url }}/financials/documents
+    ?file_format=csv
+    &limit=all
+    &status=posted
+    &statement_end_date=2026-10-26
+    &additional_fields=true
+    &client_id=AmexAPI
+    &account_key={{ amex-account-key }}
+Cookie: {{ amex-cookie }}
